@@ -1,0 +1,17 @@
+# Dependencias de Node
+node_modules/
+.pnpm-store/
+
+# Archivos de entorno y claves secretas
+.env
+.env*.local
+
+# Builds y caché
+.next/
+out/
+dist/
+build/
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
