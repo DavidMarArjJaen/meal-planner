@@ -1,0 +1,1186 @@
+[
+  {
+    "name": "Lentejas estofadas con verduras",
+    "description": "Guiso reconfortante de lentejas cocinadas a fuego lento con hortalizas y un toque de chorizo.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 50,
+    "calories": 420,
+    "protein_g": 20.0,
+    "carbs_g": 55.0,
+    "fat_g": 12.0,
+    "tags": ["Alto en Fibra", "Sin Gluten", "Rico en Hierro"],
+    "ingredients": [
+      { "name": "Lentejas pardinas", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Chorizo", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Tomate triturado", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Cocido completo con compango",
+    "description": "Cocido tradicional con garbanzos, verduras y compango de carnes y embutidos cocinados a fuego lento.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 120,
+    "calories": 680,
+    "protein_g": 42.0,
+    "carbs_g": 45.0,
+    "fat_g": 32.0,
+    "tags": ["Alto en Proteína", "Plato Único", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Garbanzos", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Morcilla", "category": "Carnes", "amount": 50, "unit": "g" },
+      { "name": "Chorizo", "category": "Carnes", "amount": 50, "unit": "g" },
+      { "name": "Tocino", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Repollo", "category": "Verduras", "amount": 80, "unit": "g" },
+      { "name": "Patata", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 50, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Fabada asturiana tradicional",
+    "description": "Guiso asturiano de alubias blancas con chorizo, morcilla y lacón cocido a fuego lento.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 100,
+    "calories": 720,
+    "protein_g": 38.0,
+    "carbs_g": 50.0,
+    "fat_g": 38.0,
+    "tags": ["Alto en Proteína", "Plato Único", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Alubias blancas", "category": "Granos/Legumbres", "amount": 120, "unit": "g" },
+      { "name": "Chorizo asturiano", "category": "Carnes", "amount": 50, "unit": "g" },
+      { "name": "Morcilla", "category": "Carnes", "amount": 50, "unit": "g" },
+      { "name": "Lacón", "category": "Carnes", "amount": 60, "unit": "g" },
+      { "name": "Tocino", "category": "Carnes", "amount": 30, "unit": "g" },
+      { "name": "Azafrán", "category": "Aceites/Condimentos", "amount": 0.5, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Sopa de fideos con pollo y verduras",
+    "description": "Sopa reconfortante de fideos finos con pollo desmenuzado y verduras en caldo casero.",
+    "category": "Cena",
+    "prep_time_minutes": 35,
+    "calories": 280,
+    "protein_g": 22.0,
+    "carbs_g": 30.0,
+    "fat_g": 8.0,
+    "tags": ["Ligero", "Reconfortante"],
+    "ingredients": [
+      { "name": "Pechuga de pollo", "category": "Carnes", "amount": 80, "unit": "g" },
+      { "name": "Fideos", "category": "Granos/Legumbres", "amount": 50, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Puerro", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Caldo de pollo", "category": "Despensa", "amount": 400, "unit": "ml" }
+    ]
+  },
+  {
+    "name": "Crema de verduras variadas",
+    "description": "Crema suave y nutritiva elaborada con una mezcla de verduras de temporada.",
+    "category": "Cena",
+    "prep_time_minutes": 30,
+    "calories": 180,
+    "protein_g": 5.0,
+    "carbs_g": 22.0,
+    "fat_g": 8.0,
+    "tags": ["Vegetariano", "Ligero", "Bajo en Calorías"],
+    "ingredients": [
+      { "name": "Calabacín", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 80, "unit": "g" },
+      { "name": "Puerro", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Patata", "category": "Verduras", "amount": 80, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Paella de marisco o mixta",
+    "description": "Arroz meloso cocinado con marisco fresco, pollo y verduras al estilo tradicional valenciano.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 60,
+    "calories": 550,
+    "protein_g": 30.0,
+    "carbs_g": 65.0,
+    "fat_g": 18.0,
+    "tags": ["Sin Gluten", "Alto en Proteína"],
+    "ingredients": [
+      { "name": "Arroz bomba", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Gambas", "category": "Pescados", "amount": 60, "unit": "g" },
+      { "name": "Mejillones", "category": "Pescados", "amount": 50, "unit": "g" },
+      { "name": "Pollo", "category": "Carnes", "amount": 60, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Judía verde", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Azafrán", "category": "Aceites/Condimentos", "amount": 0.3, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Risotto de setas",
+    "description": "Arroz cremoso italiano cocinado lentamente con caldo y una variedad de setas salteadas.",
+    "category": "Cena",
+    "prep_time_minutes": 40,
+    "calories": 480,
+    "protein_g": 12.0,
+    "carbs_g": 68.0,
+    "fat_g": 16.0,
+    "tags": ["Vegetariano", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Arroz arborio", "category": "Granos/Legumbres", "amount": 90, "unit": "g" },
+      { "name": "Setas variadas", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Queso parmesano", "category": "Lácteos", "amount": 20, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Caldo de verduras", "category": "Despensa", "amount": 400, "unit": "ml" },
+      { "name": "Mantequilla", "category": "Lácteos", "amount": 15, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Arroz a la cubana",
+    "description": "Arroz blanco acompañado de huevo frito, plátano y salsa de tomate casera.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 25,
+    "calories": 520,
+    "protein_g": 14.0,
+    "carbs_g": 75.0,
+    "fat_g": 16.0,
+    "tags": ["Vegetariano", "Clásico Casero"],
+    "ingredients": [
+      { "name": "Arroz blanco", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 2, "unit": "unidades" },
+      { "name": "Plátano", "category": "Frutas", "amount": 1, "unit": "unidades" },
+      { "name": "Tomate frito", "category": "Despensa", "amount": 80, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Arroz tres delicias",
+    "description": "Arroz frito al estilo oriental con huevo, jamón york, guisantes y zanahoria.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 25,
+    "calories": 480,
+    "protein_g": 18.0,
+    "carbs_g": 65.0,
+    "fat_g": 14.0,
+    "tags": ["Plato Único"],
+    "ingredients": [
+      { "name": "Arroz blanco", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Jamón york", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Guisantes", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Salsa de soja", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Arroz frito con soja y verduras",
+    "description": "Arroz salteado al wok con salsa de soja y una colorida mezcla de verduras crujientes.",
+    "category": "Cena",
+    "prep_time_minutes": 20,
+    "calories": 380,
+    "protein_g": 8.0,
+    "carbs_g": 60.0,
+    "fat_g": 10.0,
+    "tags": ["Vegetariano"],
+    "ingredients": [
+      { "name": "Arroz blanco", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Brotes de soja", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Salsa de soja", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" },
+      { "name": "Aceite de sésamo", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pasta carbonara tradicional",
+    "description": "Pasta italiana cremosa con panceta crujiente, huevo, queso pecorino y pimienta negra.",
+    "category": "Cena",
+    "prep_time_minutes": 25,
+    "calories": 620,
+    "protein_g": 24.0,
+    "carbs_g": 65.0,
+    "fat_g": 28.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Espaguetis", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Panceta", "category": "Carnes", "amount": 60, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 2, "unit": "unidades" },
+      { "name": "Queso pecorino", "category": "Lácteos", "amount": 30, "unit": "g" },
+      { "name": "Pimienta negra", "category": "Aceites/Condimentos", "amount": 1, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Pasta con salsa pesto",
+    "description": "Pasta al dente bañada en un aromático pesto de albahaca, piñones y parmesano.",
+    "category": "Cena",
+    "prep_time_minutes": 20,
+    "calories": 540,
+    "protein_g": 15.0,
+    "carbs_g": 68.0,
+    "fat_g": 22.0,
+    "tags": ["Vegetariano"],
+    "ingredients": [
+      { "name": "Pasta", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Albahaca fresca", "category": "Verduras", "amount": 20, "unit": "g" },
+      { "name": "Piñones", "category": "Despensa", "amount": 15, "unit": "g" },
+      { "name": "Queso parmesano", "category": "Lácteos", "amount": 20, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pasta con tomate, huevo duro y queso gratinado",
+    "description": "Pasta horneada con salsa de tomate casera, huevo duro y una capa gratinada de queso.",
+    "category": "Cena",
+    "prep_time_minutes": 35,
+    "calories": 560,
+    "protein_g": 20.0,
+    "carbs_g": 70.0,
+    "fat_g": 20.0,
+    "tags": ["Vegetariano"],
+    "ingredients": [
+      { "name": "Pasta", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Tomate frito", "category": "Despensa", "amount": 100, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 2, "unit": "unidades" },
+      { "name": "Queso rallado", "category": "Lácteos", "amount": 30, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Ensalada fría de pasta con atún y maíz",
+    "description": "Ensalada fresca de pasta con atún, maíz dulce y una vinagreta ligera.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 20,
+    "calories": 420,
+    "protein_g": 22.0,
+    "carbs_g": 55.0,
+    "fat_g": 12.0,
+    "tags": ["Alto en Proteína", "Ligero"],
+    "ingredients": [
+      { "name": "Pasta", "category": "Granos/Legumbres", "amount": 90, "unit": "g" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 80, "unit": "g" },
+      { "name": "Maíz dulce", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Lasaña de berenjena y carne",
+    "description": "Lasaña casera con capas de berenjena, carne picada y bechamel gratinada.",
+    "category": "Cena",
+    "prep_time_minutes": 60,
+    "calories": 580,
+    "protein_g": 28.0,
+    "carbs_g": 40.0,
+    "fat_g": 32.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Berenjena", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Carne picada de ternera", "category": "Carnes", "amount": 100, "unit": "g" },
+      { "name": "Placas de lasaña", "category": "Granos/Legumbres", "amount": 60, "unit": "g" },
+      { "name": "Tomate triturado", "category": "Verduras", "amount": 80, "unit": "g" },
+      { "name": "Bechamel", "category": "Lácteos", "amount": 100, "unit": "g" },
+      { "name": "Queso rallado", "category": "Lácteos", "amount": 30, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Fajitas de pollo con pimientos y cebolla",
+    "description": "Tortillas de trigo rellenas de tiras de pollo salteadas con pimientos y cebolla.",
+    "category": "Cena",
+    "prep_time_minutes": 25,
+    "calories": 480,
+    "protein_g": 32.0,
+    "carbs_g": 45.0,
+    "fat_g": 16.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Pechuga de pollo", "category": "Carnes", "amount": 120, "unit": "g" },
+      { "name": "Tortillas de trigo", "category": "Granos/Legumbres", "amount": 2, "unit": "unidades" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Fajitas de pollo con arroz y guacamole",
+    "description": "Fajitas de pollo acompañadas de arroz y un cremoso guacamole casero.",
+    "category": "Cena",
+    "prep_time_minutes": 30,
+    "calories": 560,
+    "protein_g": 34.0,
+    "carbs_g": 55.0,
+    "fat_g": 20.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Pechuga de pollo", "category": "Carnes", "amount": 120, "unit": "g" },
+      { "name": "Arroz blanco", "category": "Granos/Legumbres", "amount": 60, "unit": "g" },
+      { "name": "Aguacate", "category": "Frutas", "amount": 60, "unit": "g" },
+      { "name": "Tortillas de trigo", "category": "Granos/Legumbres", "amount": 1, "unit": "unidades" },
+      { "name": "Tomate", "category": "Verduras", "amount": 30, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Fajitas de pollo, ricotta y calabacín",
+    "description": "Fajitas rellenas de pollo, ricotta cremosa y calabacín salteado.",
+    "category": "Cena",
+    "prep_time_minutes": 25,
+    "calories": 470,
+    "protein_g": 30.0,
+    "carbs_g": 40.0,
+    "fat_g": 18.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Pechuga de pollo", "category": "Carnes", "amount": 100, "unit": "g" },
+      { "name": "Ricotta", "category": "Lácteos", "amount": 40, "unit": "g" },
+      { "name": "Calabacín", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Tortillas de trigo", "category": "Granos/Legumbres", "amount": 2, "unit": "unidades" }
+    ]
+  },
+  {
+    "name": "Fajitas de carne picada estilo Tex-Mex",
+    "description": "Fajitas Tex-Mex con carne picada especiada, pimientos y un toque picante.",
+    "category": "Cena",
+    "prep_time_minutes": 25,
+    "calories": 540,
+    "protein_g": 30.0,
+    "carbs_g": 42.0,
+    "fat_g": 24.0,
+    "tags": ["Alto en Proteína", "Picante"],
+    "ingredients": [
+      { "name": "Carne picada de ternera", "category": "Carnes", "amount": 120, "unit": "g" },
+      { "name": "Tortillas de trigo", "category": "Granos/Legumbres", "amount": 2, "unit": "unidades" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Especias Tex-Mex", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pizza casera de jamón, queso y champiñones",
+    "description": "Pizza casera de masa fina con jamón york, queso mozzarella y champiñones frescos.",
+    "category": "Cena",
+    "prep_time_minutes": 40,
+    "calories": 650,
+    "protein_g": 28.0,
+    "carbs_g": 70.0,
+    "fat_g": 26.0,
+    "tags": ["Clásico Casero"],
+    "ingredients": [
+      { "name": "Masa de pizza", "category": "Granos/Legumbres", "amount": 150, "unit": "g" },
+      { "name": "Jamón york", "category": "Carnes", "amount": 50, "unit": "g" },
+      { "name": "Queso mozzarella", "category": "Lácteos", "amount": 80, "unit": "g" },
+      { "name": "Champiñones", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Tomate frito", "category": "Despensa", "amount": 60, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Migas tradicionales con tropezones",
+    "description": "Migas de pan doradas en aceite de oliva con panceta, chorizo y ajo.",
+    "category": "Desayuno",
+    "prep_time_minutes": 40,
+    "calories": 520,
+    "protein_g": 18.0,
+    "carbs_g": 48.0,
+    "fat_g": 30.0,
+    "tags": ["Clásico Casero"],
+    "ingredients": [
+      { "name": "Pan del día anterior", "category": "Granos/Legumbres", "amount": 150, "unit": "g" },
+      { "name": "Panceta", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Chorizo", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Ajo", "category": "Verduras", "amount": 10, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 3, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Huevos rotos con papas y jamón ibérico",
+    "description": "Huevos fritos rotos sobre patatas fritas crujientes y jamón ibérico curado.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 30,
+    "calories": 580,
+    "protein_g": 26.0,
+    "carbs_g": 40.0,
+    "fat_g": 34.0,
+    "tags": ["Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Patata", "category": "Verduras", "amount": 200, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 2, "unit": "unidades" },
+      { "name": "Jamón ibérico", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 3, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Huevos rellenos de atún y mayonesa",
+    "description": "Huevos cocidos rellenos de una cremosa mezcla de atún y mayonesa.",
+    "category": "Snack",
+    "prep_time_minutes": 20,
+    "calories": 320,
+    "protein_g": 20.0,
+    "carbs_g": 4.0,
+    "fat_g": 24.0,
+    "tags": ["Sin Gluten", "Alto en Proteína"],
+    "ingredients": [
+      { "name": "Huevo", "category": "Despensa", "amount": 4, "unit": "unidades" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 80, "unit": "g" },
+      { "name": "Mayonesa", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Revuelto de setas y champiñones",
+    "description": "Huevos revueltos suaves con setas y champiñones salteados en aceite de oliva.",
+    "category": "Cena",
+    "prep_time_minutes": 15,
+    "calories": 320,
+    "protein_g": 18.0,
+    "carbs_g": 6.0,
+    "fat_g": 24.0,
+    "tags": ["Sin Gluten", "Bajo en Carbohidratos", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Huevo", "category": "Despensa", "amount": 3, "unit": "unidades" },
+      { "name": "Setas variadas", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Champiñones", "category": "Verduras", "amount": 80, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Revuelto de espinacas con ajitos",
+    "description": "Huevos revueltos cremosos con espinacas frescas salteadas y ajo tierno.",
+    "category": "Cena",
+    "prep_time_minutes": 15,
+    "calories": 280,
+    "protein_g": 18.0,
+    "carbs_g": 5.0,
+    "fat_g": 20.0,
+    "tags": ["Sin Gluten", "Bajo en Carbohidratos", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Huevo", "category": "Despensa", "amount": 3, "unit": "unidades" },
+      { "name": "Espinacas frescas", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Ajo tierno", "category": "Verduras", "amount": 20, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Revuelto de habitas baby con jamón",
+    "description": "Huevos revueltos con habitas baby tiernas y taquitos de jamón serrano.",
+    "category": "Cena",
+    "prep_time_minutes": 20,
+    "calories": 340,
+    "protein_g": 22.0,
+    "carbs_g": 10.0,
+    "fat_g": 24.0,
+    "tags": ["Sin Gluten", "Alto en Proteína"],
+    "ingredients": [
+      { "name": "Huevo", "category": "Despensa", "amount": 3, "unit": "unidades" },
+      { "name": "Habitas baby", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Jamón serrano", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Tortilla de papas tradicional",
+    "description": "Tortilla española jugosa de patatas y cebolla cuajada al punto perfecto.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 40,
+    "calories": 420,
+    "protein_g": 14.0,
+    "carbs_g": 30.0,
+    "fat_g": 26.0,
+    "tags": ["Vegetariano", "Sin Gluten", "Clásico Casero"],
+    "ingredients": [
+      { "name": "Patata", "category": "Verduras", "amount": 200, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 4, "unit": "unidades" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 4, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Tortilla de berenjena",
+    "description": "Tortilla esponjosa de berenjena salteada con huevo y un toque de cebolla.",
+    "category": "Cena",
+    "prep_time_minutes": 30,
+    "calories": 320,
+    "protein_g": 14.0,
+    "carbs_g": 12.0,
+    "fat_g": 24.0,
+    "tags": ["Vegetariano", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Berenjena", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 3, "unit": "unidades" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pisto manchego con huevo a la plancha",
+    "description": "Pisto manchego de verduras estofadas coronado con un huevo a la plancha.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 40,
+    "calories": 340,
+    "protein_g": 14.0,
+    "carbs_g": 22.0,
+    "fat_g": 22.0,
+    "tags": ["Vegetariano", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Calabacín", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 80, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Zarangollo murciano",
+    "description": "Revuelto murciano de calabacín y cebolla pochados con huevo batido.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 25,
+    "calories": 280,
+    "protein_g": 12.0,
+    "carbs_g": 14.0,
+    "fat_g": 20.0,
+    "tags": ["Vegetariano", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Calabacín", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 2, "unit": "unidades" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Guisantes salteados con jamón",
+    "description": "Guisantes tiernos salteados con taquitos de jamón serrano y un sofrito ligero.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 20,
+    "calories": 260,
+    "protein_g": 16.0,
+    "carbs_g": 24.0,
+    "fat_g": 10.0,
+    "tags": ["Sin Gluten", "Alto en Fibra"],
+    "ingredients": [
+      { "name": "Guisantes", "category": "Verduras", "amount": 200, "unit": "g" },
+      { "name": "Jamón serrano", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Sándwich vegetal con huevo y mayonesa",
+    "description": "Sándwich fresco de pan de molde con huevo, lechuga, tomate y mayonesa.",
+    "category": "Snack",
+    "prep_time_minutes": 15,
+    "calories": 380,
+    "protein_g": 16.0,
+    "carbs_g": 40.0,
+    "fat_g": 18.0,
+    "tags": ["Vegetariano", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Pan de molde", "category": "Granos/Legumbres", "amount": 4, "unit": "unidades" },
+      { "name": "Huevo", "category": "Despensa", "amount": 2, "unit": "unidades" },
+      { "name": "Lechuga", "category": "Verduras", "amount": 20, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Mayonesa", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Sándwich de atún, huevo duro y lechuga",
+    "description": "Sándwich clásico relleno de atún, huevo duro y lechuga fresca.",
+    "category": "Snack",
+    "prep_time_minutes": 15,
+    "calories": 400,
+    "protein_g": 24.0,
+    "carbs_g": 38.0,
+    "fat_g": 16.0,
+    "tags": ["Alto en Proteína", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Pan de molde", "category": "Granos/Legumbres", "amount": 4, "unit": "unidades" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 80, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Lechuga", "category": "Verduras", "amount": 20, "unit": "g" },
+      { "name": "Mayonesa", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Canto de pan tradicional con tomate, aceite y atún",
+    "description": "Rebanada de pan rústico con tomate rallado, aceite de oliva y atún.",
+    "category": "Snack",
+    "prep_time_minutes": 10,
+    "calories": 320,
+    "protein_g": 18.0,
+    "carbs_g": 32.0,
+    "fat_g": 14.0,
+    "tags": ["Rápido (<15 min)", "Alto en Proteína"],
+    "ingredients": [
+      { "name": "Pan rústico", "category": "Granos/Legumbres", "amount": 80, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 60, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Hamburguesa completa con queso y lechuga",
+    "description": "Hamburguesa jugosa de ternera con queso fundido, lechuga y tomate en pan brioche.",
+    "category": "Cena",
+    "prep_time_minutes": 25,
+    "calories": 650,
+    "protein_g": 34.0,
+    "carbs_g": 45.0,
+    "fat_g": 36.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Carne picada de ternera", "category": "Carnes", "amount": 150, "unit": "g" },
+      { "name": "Pan de hamburguesa", "category": "Granos/Legumbres", "amount": 1, "unit": "unidades" },
+      { "name": "Queso cheddar", "category": "Lácteos", "amount": 25, "unit": "g" },
+      { "name": "Lechuga", "category": "Verduras", "amount": 15, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 20, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Empanadillas de atún y tomate",
+    "description": "Empanadillas horneadas rellenas de atún, tomate y un sofrito casero.",
+    "category": "Snack",
+    "prep_time_minutes": 30,
+    "calories": 380,
+    "protein_g": 16.0,
+    "carbs_g": 38.0,
+    "fat_g": 18.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Obleas de empanadilla", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 80, "unit": "g" },
+      { "name": "Tomate frito", "category": "Despensa", "amount": 50, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" }
+    ]
+  },
+  {
+    "name": "Trenza de hojaldre rellena de jamón y queso",
+    "description": "Trenza crujiente de hojaldre horneada con relleno de jamón york y queso fundido.",
+    "category": "Snack",
+    "prep_time_minutes": 35,
+    "calories": 480,
+    "protein_g": 18.0,
+    "carbs_g": 38.0,
+    "fat_g": 30.0,
+    "tags": ["Clásico Casero"],
+    "ingredients": [
+      { "name": "Masa de hojaldre", "category": "Granos/Legumbres", "amount": 120, "unit": "g" },
+      { "name": "Jamón york", "category": "Carnes", "amount": 60, "unit": "g" },
+      { "name": "Queso", "category": "Lácteos", "amount": 60, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" }
+    ]
+  },
+  {
+    "name": "Noodles orientales de pollo y verduras",
+    "description": "Fideos orientales salteados al wok con pollo y verduras crujientes en salsa de soja.",
+    "category": "Cena",
+    "prep_time_minutes": 25,
+    "calories": 460,
+    "protein_g": 28.0,
+    "carbs_g": 55.0,
+    "fat_g": 14.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Noodles", "category": "Granos/Legumbres", "amount": 100, "unit": "g" },
+      { "name": "Pechuga de pollo", "category": "Carnes", "amount": 100, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Salsa de soja", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pollo asado al horno con papas asadas",
+    "description": "Pollo dorado al horno acompañado de patatas asadas con hierbas.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 70,
+    "calories": 560,
+    "protein_g": 42.0,
+    "carbs_g": 35.0,
+    "fat_g": 26.0,
+    "tags": ["Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Muslo de pollo", "category": "Carnes", "amount": 200, "unit": "g" },
+      { "name": "Patata", "category": "Verduras", "amount": 200, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" },
+      { "name": "Romero", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pechuga de pollo a la plancha con ensalada verde",
+    "description": "Pechuga de pollo a la plancha jugosa servida con una fresca ensalada verde.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 20,
+    "calories": 340,
+    "protein_g": 40.0,
+    "carbs_g": 10.0,
+    "fat_g": 14.0,
+    "tags": ["Alto en Proteína", "Bajo en Carbohidratos", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Pechuga de pollo", "category": "Carnes", "amount": 180, "unit": "g" },
+      { "name": "Lechuga", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pollo en pepitoria tradicional",
+    "description": "Guiso tradicional de pollo en salsa de almendras, azafrán y huevo cocido.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 60,
+    "calories": 520,
+    "protein_g": 38.0,
+    "carbs_g": 18.0,
+    "fat_g": 30.0,
+    "tags": ["Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Pollo", "category": "Carnes", "amount": 200, "unit": "g" },
+      { "name": "Almendras", "category": "Despensa", "amount": 20, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Azafrán", "category": "Aceites/Condimentos", "amount": 0.3, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Solomillo de cerdo con salsa de queso azul y papas",
+    "description": "Solomillo de cerdo tierno bañado en una cremosa salsa de queso azul con patatas.",
+    "category": "Cena",
+    "prep_time_minutes": 35,
+    "calories": 620,
+    "protein_g": 40.0,
+    "carbs_g": 30.0,
+    "fat_g": 36.0,
+    "tags": ["Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Solomillo de cerdo", "category": "Carnes", "amount": 180, "unit": "g" },
+      { "name": "Queso azul", "category": "Lácteos", "amount": 40, "unit": "g" },
+      { "name": "Nata para cocinar", "category": "Lácteos", "amount": 60, "unit": "ml" },
+      { "name": "Patata", "category": "Verduras", "amount": 150, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Lomo de cerdo al horno con papas cocidas",
+    "description": "Lomo de cerdo asado al horno servido con patatas cocidas.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 50,
+    "calories": 480,
+    "protein_g": 38.0,
+    "carbs_g": 32.0,
+    "fat_g": 20.0,
+    "tags": ["Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Lomo de cerdo", "category": "Carnes", "amount": 180, "unit": "g" },
+      { "name": "Patata", "category": "Verduras", "amount": 180, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Lomos de cerdo adobados a la plancha con verduras",
+    "description": "Lomos de cerdo marinados en adobo, a la plancha, acompañados de verduras salteadas.",
+    "category": "Cena",
+    "prep_time_minutes": 30,
+    "calories": 440,
+    "protein_g": 36.0,
+    "carbs_g": 16.0,
+    "fat_g": 24.0,
+    "tags": ["Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Lomo de cerdo adobado", "category": "Carnes", "amount": 180, "unit": "g" },
+      { "name": "Calabacín", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Filetes empanados con papas fritas",
+    "description": "Filetes de ternera empanados y fritos hasta quedar dorados, con patatas fritas.",
+    "category": "Cena",
+    "prep_time_minutes": 30,
+    "calories": 680,
+    "protein_g": 34.0,
+    "carbs_g": 50.0,
+    "fat_g": 36.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Filete de ternera", "category": "Carnes", "amount": 150, "unit": "g" },
+      { "name": "Pan rallado", "category": "Granos/Legumbres", "amount": 30, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Patata", "category": "Verduras", "amount": 200, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 3, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Flamenquín con ensalada",
+    "description": "Rollito cordobés de lomo enrollado con jamón, empanado y frito, con ensalada fresca.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 35,
+    "calories": 600,
+    "protein_g": 36.0,
+    "carbs_g": 30.0,
+    "fat_g": 34.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Lomo de cerdo", "category": "Carnes", "amount": 150, "unit": "g" },
+      { "name": "Jamón serrano", "category": "Carnes", "amount": 40, "unit": "g" },
+      { "name": "Pan rallado", "category": "Granos/Legumbres", "amount": 30, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Lechuga", "category": "Verduras", "amount": 40, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Albóndigas de carne en salsa",
+    "description": "Albóndigas caseras de carne picada cocinadas en una sabrosa salsa de tomate.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 45,
+    "calories": 480,
+    "protein_g": 28.0,
+    "carbs_g": 25.0,
+    "fat_g": 28.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Carne picada mixta", "category": "Carnes", "amount": 150, "unit": "g" },
+      { "name": "Pan rallado", "category": "Granos/Legumbres", "amount": 20, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Tomate triturado", "category": "Verduras", "amount": 100, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" }
+    ]
+  },
+  {
+    "name": "Filetes de cabezada a la plancha con pimientos",
+    "description": "Filetes de cabezada de cerdo a la plancha acompañados de pimientos salteados.",
+    "category": "Cena",
+    "prep_time_minutes": 25,
+    "calories": 420,
+    "protein_g": 34.0,
+    "carbs_g": 12.0,
+    "fat_g": 26.0,
+    "tags": ["Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Filete de cabezada de cerdo", "category": "Carnes", "amount": 180, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Pimiento verde", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pinchos morunos a la plancha con cuscús",
+    "description": "Pinchos morunos especiados a la plancha servidos sobre un cuscús esponjoso.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 30,
+    "calories": 500,
+    "protein_g": 32.0,
+    "carbs_g": 42.0,
+    "fat_g": 22.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Carne de cerdo o pollo en tacos", "category": "Carnes", "amount": 150, "unit": "g" },
+      { "name": "Cuscús", "category": "Granos/Legumbres", "amount": 80, "unit": "g" },
+      { "name": "Especias para pinchitos", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Carne asada en su jugo",
+    "description": "Carne de ternera asada lentamente en su propio jugo hasta quedar tierna y jugosa.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 60,
+    "calories": 460,
+    "protein_g": 40.0,
+    "carbs_g": 8.0,
+    "fat_g": 28.0,
+    "tags": ["Alto en Proteína", "Sin Gluten", "Bajo en Carbohidratos"],
+    "ingredients": [
+      { "name": "Carne de ternera", "category": "Carnes", "amount": 200, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Vino blanco", "category": "Despensa", "amount": 50, "unit": "ml" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Lenguado a la plancha con papas cocidas",
+    "description": "Filete de lenguado a la plancha, ligero y sabroso, con patatas cocidas.",
+    "category": "Cena",
+    "prep_time_minutes": 20,
+    "calories": 340,
+    "protein_g": 32.0,
+    "carbs_g": 28.0,
+    "fat_g": 10.0,
+    "tags": ["Alto en Proteína", "Sin Gluten", "Ligero"],
+    "ingredients": [
+      { "name": "Lenguado", "category": "Pescados", "amount": 180, "unit": "g" },
+      { "name": "Patata", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Boquerones fritos con ensalada",
+    "description": "Boquerones fritos crujientes al estilo andaluz, acompañados de ensalada fresca.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 25,
+    "calories": 420,
+    "protein_g": 26.0,
+    "carbs_g": 22.0,
+    "fat_g": 24.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Boquerones", "category": "Pescados", "amount": 200, "unit": "g" },
+      { "name": "Harina", "category": "Granos/Legumbres", "amount": 30, "unit": "g" },
+      { "name": "Lechuga", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 3, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Merluza a la plancha con verduras",
+    "description": "Lomo de merluza a la plancha, jugoso y ligero, acompañado de verduras salteadas.",
+    "category": "Cena",
+    "prep_time_minutes": 20,
+    "calories": 300,
+    "protein_g": 34.0,
+    "carbs_g": 12.0,
+    "fat_g": 12.0,
+    "tags": ["Alto en Proteína", "Sin Gluten", "Ligero"],
+    "ingredients": [
+      { "name": "Merluza", "category": "Pescados", "amount": 180, "unit": "g" },
+      { "name": "Calabacín", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Calamares a la romana",
+    "description": "Anillas de calamar rebozadas y fritas hasta quedar doradas y crujientes.",
+    "category": "Snack",
+    "prep_time_minutes": 25,
+    "calories": 420,
+    "protein_g": 22.0,
+    "carbs_g": 30.0,
+    "fat_g": 24.0,
+    "tags": ["Alto en Proteína"],
+    "ingredients": [
+      { "name": "Calamar", "category": "Pescados", "amount": 150, "unit": "g" },
+      { "name": "Harina", "category": "Granos/Legumbres", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 3, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Salmón al horno con verduras",
+    "description": "Filete de salmón horneado al punto, jugoso, con una guarnición de verduras asadas.",
+    "category": "Cena",
+    "prep_time_minutes": 30,
+    "calories": 420,
+    "protein_g": 36.0,
+    "carbs_g": 14.0,
+    "fat_g": 24.0,
+    "tags": ["Alto en Proteína", "Sin Gluten", "Rico en Omega-3"],
+    "ingredients": [
+      { "name": "Salmón", "category": "Pescados", "amount": 180, "unit": "g" },
+      { "name": "Calabacín", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Gambas al pilpil",
+    "description": "Gambas salteadas en aceite de oliva con ajo y guindilla, al más puro estilo andaluz.",
+    "category": "Snack",
+    "prep_time_minutes": 15,
+    "calories": 280,
+    "protein_g": 24.0,
+    "carbs_g": 4.0,
+    "fat_g": 18.0,
+    "tags": ["Sin Gluten", "Alto en Proteína", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Gambas", "category": "Pescados", "amount": 200, "unit": "g" },
+      { "name": "Ajo", "category": "Verduras", "amount": 15, "unit": "g" },
+      { "name": "Guindilla", "category": "Aceites/Condimentos", "amount": 1, "unit": "unidades" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 3, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Almejas a la marinera",
+    "description": "Almejas cocinadas en una sabrosa salsa marinera de tomate, vino blanco y ajo.",
+    "category": "Snack",
+    "prep_time_minutes": 20,
+    "calories": 260,
+    "protein_g": 20.0,
+    "carbs_g": 10.0,
+    "fat_g": 14.0,
+    "tags": ["Sin Gluten", "Alto en Proteína"],
+    "ingredients": [
+      { "name": "Almejas", "category": "Pescados", "amount": 250, "unit": "g" },
+      { "name": "Ajo", "category": "Verduras", "amount": 10, "unit": "g" },
+      { "name": "Vino blanco", "category": "Despensa", "amount": 50, "unit": "ml" },
+      { "name": "Tomate triturado", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Gazpacho andaluz tradicional",
+    "description": "Sopa fría andaluza de tomate, pepino, pimiento y ajo, refrescante y ligera.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 15,
+    "calories": 160,
+    "protein_g": 4.0,
+    "carbs_g": 18.0,
+    "fat_g": 8.0,
+    "tags": ["Vegetariano", "Sin Gluten", "Bajo en Calorías", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Tomate", "category": "Verduras", "amount": 300, "unit": "g" },
+      { "name": "Pepino", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Pimiento verde", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Ajo", "category": "Verduras", "amount": 5, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Salmorejo cordobés con jamón y huevo",
+    "description": "Crema fría cordobesa de tomate y pan, coronada con jamón serrano y huevo picado.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 20,
+    "calories": 380,
+    "protein_g": 12.0,
+    "carbs_g": 32.0,
+    "fat_g": 22.0,
+    "tags": ["Clásico Casero"],
+    "ingredients": [
+      { "name": "Tomate", "category": "Verduras", "amount": 250, "unit": "g" },
+      { "name": "Pan", "category": "Granos/Legumbres", "amount": 60, "unit": "g" },
+      { "name": "Jamón serrano", "category": "Carnes", "amount": 30, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Pipirrana",
+    "description": "Ensalada fresca andaluza de tomate, pimiento, cebolla y pepino aliñada con aceite de oliva.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 15,
+    "calories": 180,
+    "protein_g": 5.0,
+    "carbs_g": 16.0,
+    "fat_g": 12.0,
+    "tags": ["Vegetariano", "Sin Gluten", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Tomate", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Pimiento verde", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Pepino", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Mozzarella con tomate y albahaca",
+    "description": "Ensalada Caprese de mozzarella fresca, tomate maduro y hojas de albahaca.",
+    "category": "Snack",
+    "prep_time_minutes": 10,
+    "calories": 320,
+    "protein_g": 18.0,
+    "carbs_g": 10.0,
+    "fat_g": 24.0,
+    "tags": ["Vegetariano", "Sin Gluten", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Mozzarella fresca", "category": "Lácteos", "amount": 125, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Albahaca fresca", "category": "Verduras", "amount": 10, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Ensaladilla rusa tradicional",
+    "description": "Ensalada fría de patata, zanahoria, atún, huevo y mayonesa al estilo español.",
+    "category": "Snack",
+    "prep_time_minutes": 30,
+    "calories": 380,
+    "protein_g": 14.0,
+    "carbs_g": 28.0,
+    "fat_g": 24.0,
+    "tags": ["Sin Gluten", "Clásico Casero"],
+    "ingredients": [
+      { "name": "Patata", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Zanahoria", "category": "Verduras", "amount": 60, "unit": "g" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 60, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Mayonesa", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Ensalada murciana",
+    "description": "Ensalada murciana de tomate, cebolla y atún, aliñada con aceite de oliva y aceitunas.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 15,
+    "calories": 260,
+    "protein_g": 14.0,
+    "carbs_g": 14.0,
+    "fat_g": 18.0,
+    "tags": ["Sin Gluten", "Rápido (<15 min)"],
+    "ingredients": [
+      { "name": "Tomate", "category": "Verduras", "amount": 150, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 60, "unit": "g" },
+      { "name": "Aceitunas negras", "category": "Despensa", "amount": 20, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Ensalada de alubias blancas con verduras y atún",
+    "description": "Ensalada nutritiva de alubias blancas con verduras frescas y atún.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 15,
+    "calories": 340,
+    "protein_g": 24.0,
+    "carbs_g": 34.0,
+    "fat_g": 12.0,
+    "tags": ["Alto en Fibra", "Alto en Proteína", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Alubias blancas cocidas", "category": "Granos/Legumbres", "amount": 150, "unit": "g" },
+      { "name": "Atún en conserva", "category": "Pescados", "amount": 70, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Ensalada de garbanzos",
+    "description": "Ensalada fresca de garbanzos con verduras variadas y un aliño ligero de aceite de oliva.",
+    "category": "Almuerzo",
+    "prep_time_minutes": 15,
+    "calories": 320,
+    "protein_g": 14.0,
+    "carbs_g": 40.0,
+    "fat_g": 12.0,
+    "tags": ["Vegetariano", "Alto en Fibra", "Sin Gluten"],
+    "ingredients": [
+      { "name": "Garbanzos cocidos", "category": "Granos/Legumbres", "amount": 150, "unit": "g" },
+      { "name": "Tomate", "category": "Verduras", "amount": 50, "unit": "g" },
+      { "name": "Pimiento rojo", "category": "Verduras", "amount": 40, "unit": "g" },
+      { "name": "Cebolla", "category": "Verduras", "amount": 30, "unit": "g" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 1, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Croquetas caseras variadas",
+    "description": "Croquetas cremosas de bechamel caseras, rebozadas y fritas hasta dorarse.",
+    "category": "Snack",
+    "prep_time_minutes": 45,
+    "calories": 380,
+    "protein_g": 12.0,
+    "carbs_g": 32.0,
+    "fat_g": 22.0,
+    "tags": ["Clásico Casero"],
+    "ingredients": [
+      { "name": "Jamón o pollo", "category": "Carnes", "amount": 60, "unit": "g" },
+      { "name": "Bechamel", "category": "Lácteos", "amount": 150, "unit": "g" },
+      { "name": "Pan rallado", "category": "Granos/Legumbres", "amount": 30, "unit": "g" },
+      { "name": "Huevo", "category": "Despensa", "amount": 1, "unit": "unidades" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 2, "unit": "cucharadas" }
+    ]
+  },
+  {
+    "name": "Berenjenas fritas con miel de caña",
+    "description": "Berenjenas fritas crujientes bañadas con un toque dulce de miel de caña.",
+    "category": "Snack",
+    "prep_time_minutes": 20,
+    "calories": 320,
+    "protein_g": 5.0,
+    "carbs_g": 30.0,
+    "fat_g": 20.0,
+    "tags": ["Vegetariano", "Clásico Casero"],
+    "ingredients": [
+      { "name": "Berenjena", "category": "Verduras", "amount": 200, "unit": "g" },
+      { "name": "Harina", "category": "Granos/Legumbres", "amount": 30, "unit": "g" },
+      { "name": "Miel de caña", "category": "Despensa", "amount": 2, "unit": "cucharadas" },
+      { "name": "Aceite de oliva virgen extra", "category": "Aceites/Condimentos", "amount": 3, "unit": "cucharadas" }
+    ]
+  }
+]
