@@ -4,22 +4,9 @@ Aplicación para la planificación semanal de comidas personalizada con asistent
 
 ---
 
-## 🗄️ Arquitectura de la Base de Datos
+### 📐 Esquema de la Base de Datos
 
-El proyecto utiliza un modelo relacional en **PostgreSQL** compuesto por 6 tablas y vistas optimizadas para alimentar al motor de Inteligencia Artificial con el contexto nutricional, ingredientes y restricciones dietéticas del usuario.
-
-### 📐 Esquema de Tablas
-
- ┌──────────────┐                  ┌────────────────┐                  ┌─────────────────┐
- │     tags     │                  │   categories   │                  │   ingredients   │
- └──────┬───────┘                  └───────┬────────┘                  └────────┬────────┘
-        │ (1)                              │ (1)                                │ (1)
-        │                                  │                                    │
-        ▼ (N)                              ▼ (N)                                ▼ (N)
- ┌──────────────┐                  ┌────────────────┐                  ┌─────────────────┐
- │  meal_tags   │ ──(N)──────(1)─► │     meals      │ ◄─(1)──────(N)── │meal_ingredients │
- └──────────────┘                  └────────────────┘                  └─────────────────┘
-  (Intermedia)                         (Principal)                        (Intermedia)
+![Diagrama de Relaciones de la Base de Datos](database_schema.png)
 
 ### 🔗 Relaciones y Estructura
 
