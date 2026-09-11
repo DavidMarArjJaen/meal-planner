@@ -2,15 +2,10 @@ import json
 import psycopg2
 import os
 import sys
+from dotenv import load_dotenv
 
-# Configuración de conexión a PostgreSQL
-DB_CONFIG = {
-    "dbname": "meal_planner",
-    "user": "postgres",        # Cambia si tu usuario de Postgres en WSL es diferente
-    "password": "postgres",    # Cambia por tu contraseña si la configuraste
-    "host": "127.0.0.1",
-    "port": "5432"
-}
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
 
 JSON_FILE_PATH = os.path.join(os.path.dirname(__file__), "meals_data.json")
 
@@ -28,9 +23,16 @@ def seed_database():
     meals_data = load_json_data(JSON_FILE_PATH)
     
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        # Conexión leyendo directamente del .env
+        conn = psycopg2.connect(
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            host=os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT")
+        )
         cur = conn.cursor()
-        print("🔌 Conexión exitosa a la base de datos 'meal_planner'.")
+        print(f"🔌 Conexión exitosa a la base de datos '{os.getenv('DB_NAME')}'.")
         
         # 1. Asegurar categorías fijas
         categories_map = {}

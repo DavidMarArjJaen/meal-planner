@@ -1,15 +1,12 @@
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-# Carga las variables definidas en el archivo .env
-load_dotenv()
+# Carga explícita buscando .env en cualquier directorio superior
+load_dotenv(find_dotenv())
 
 def get_db_connection():
-    """
-    Crea y devuelve una conexión a PostgreSQL leyendo credenciales desde variables de entorno.
-    """
     conn = psycopg2.connect(
         dbname=os.getenv("DB_NAME"),
         user=os.getenv("DB_USER"),

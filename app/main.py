@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Query
 from app.database import get_db_connection
+from app.schemas import MealResponse, MealListResponse  # <--- Importamos los esquemas
 
 app = FastAPI(
     title="Meal Planner AI API",
@@ -16,43 +17,34 @@ def read_root():
         "message": "Servidor FastAPI funcionando correctamente"
     }
 
-@app.get("/meals")
+@app.get("/meals", response_model=MealListResponse)  # <--- Indicamos el modelo de respuesta
 def get_meals(
-    category: Optional[str] = Query(None, description="Filtrar por categoría (ej. Almuerzo, Cena, Desayuno)"),
+    category: Optional[str] = Query(None, description="Filtrar por categoría (ej. Almuerzo, Cena)"),
     max_calories: Optional[int] = Query(None, description="Calorías máximas permitidas"),
     tag: Optional[str] = Query(None, description="Filtrar por etiqueta (ej. Sin Gluten, Alto en Proteína)"),
     limit: int = Query(10, ge=1, le=100, description="Número máximo de resultados (1-100)")
 ):
-    """
-    Obtiene platos filtrados dinámicamente según categoría, calorías máximas o etiquetas.
-    """
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # Consulta base
             query = "SELECT * FROM v_meals_full_info WHERE 1=1"
             params = []
 
-            # Filtro por categoría (usando la columna 'category')
             if category:
                 query += " AND category ILIKE %s"
                 params.append(f"%{category}%")
 
-            # Filtro por calorías máximas
             if max_calories:
                 query += " AND calories <= %s"
                 params.append(max_calories)
 
-            # Filtro por etiquetas
             if tag:
                 query += " AND tags::text ILIKE %s"
                 params.append(f"%{tag}%")
 
-            # Paginación/Límite
             query += " LIMIT %s;"
             params.append(limit)
 
-            # Ejecutamos la consulta pasándole los parámetros
             cursor.execute(query, tuple(params))
             meals = cursor.fetchall()
 
@@ -74,20 +66,14 @@ def get_meals(
     finally:
         conn.close()
 
-
-@app.get("/meals/{meal_id}")
+@app.get("/meals/{meal_id}", response_model=MealResponse)  # <--- Indicamos el modelo de respuesta
 def get_meal_by_id(meal_id: int):
-    """
-    Obtiene la información detallada de una sola comida mediante su ID único.
-    """
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # Consultamos la vista filtrando por el ID único
             cursor.execute("SELECT * FROM v_meals_full_info WHERE meal_id = %s;", (meal_id,))
-            meal = cursor.fetchone()  # fetchone() trae solo 1 registro (o None)
+            meal = cursor.fetchone()
 
-            # Si el ID no existe en la base de datos
             if not meal:
                 raise HTTPException(
                     status_code=404,
@@ -96,7 +82,6 @@ def get_meal_by_id(meal_id: int):
 
             return meal
     except HTTPException:
-        # Re-elevamos la excepción HTTP 404 para que no la capture el except genérico
         raise
     except Exception as e:
         raise HTTPException(
