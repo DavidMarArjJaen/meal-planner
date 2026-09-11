@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException
+from typing import Optional
+from fastapi import FastAPI, HTTPException, Query
 from app.database import get_db_connection
 
 app = FastAPI(
@@ -16,28 +17,60 @@ def read_root():
     }
 
 @app.get("/meals")
-def get_meals(limit: int = 10):
+def get_meals(
+    category: Optional[str] = Query(None, description="Filtrar por categoría (ej. Almuerzo, Cena, Desayuno)"),
+    max_calories: Optional[int] = Query(None, description="Calorías máximas permitidas"),
+    tag: Optional[str] = Query(None, description="Filtrar por etiqueta (ej. Sin Gluten, Alto en Proteína)"),
+    limit: int = Query(10, ge=1, le=100, description="Número máximo de resultados (1-100)")
+):
     """
-    Obtiene la lista de platos desde la vista 'v_meals_full_info'.
-    Parámetro opcional 'limit' para controlar cuántos resultados devolver.
+    Obtiene platos filtrados dinámicamente según categoría, calorías máximas o etiquetas.
     """
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # Consultamos la vista creada en la base de datos
-            cursor.execute("SELECT * FROM v_meals_full_info LIMIT %s;", (limit,))
+            # Consulta base
+            query = "SELECT * FROM v_meals_full_info WHERE 1=1"
+            params = []
+
+            # Filtro por categoría (búsqueda parcial insensible a mayúsculas/minúsculas)
+            # ✅ AHORA (category)
+            if category:
+                query += " AND category ILIKE %s"
+                params.append(f"%{category}%")
+
+            # Filtro por calorías máximas
+            if max_calories:
+                query += " AND calories <= %s"
+                params.append(max_calories)
+
+            # Filtro por etiquetas (convierte el array de etiquetas a texto para buscar coincidencia)
+            if tag:
+                query += " AND tags::text ILIKE %s"
+                params.append(f"%{tag}%")
+
+            # Paginación/Límite
+            query += " LIMIT %s;"
+            params.append(limit)
+
+            # Ejecutamos la consulta pasándole los parámetros
+            cursor.execute(query, tuple(params))
             meals = cursor.fetchall()
-            
+
             return {
                 "total_returned": len(meals),
+                "filters_applied": {
+                    "category": category,
+                    "max_calories": max_calories,
+                    "tag": tag,
+                    "limit": limit
+                },
                 "meals": meals
             }
     except Exception as e:
-        # Si ocurre un error, devolvemos un código HTTP 500 (Internal Server Error)
         raise HTTPException(
-            status_code=500, 
+            status_code=500,
             detail=f"Error al consultar la base de datos: {str(e)}"
         )
     finally:
-        # Aseguramos que la conexión siempre se cierre al terminar
         conn.close()
