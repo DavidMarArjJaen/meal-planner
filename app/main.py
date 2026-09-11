@@ -33,8 +33,7 @@ def get_meals(
             query = "SELECT * FROM v_meals_full_info WHERE 1=1"
             params = []
 
-            # Filtro por categoría (búsqueda parcial insensible a mayúsculas/minúsculas)
-            # ✅ AHORA (category)
+            # Filtro por categoría (usando la columna 'category')
             if category:
                 query += " AND category ILIKE %s"
                 params.append(f"%{category}%")
@@ -44,7 +43,7 @@ def get_meals(
                 query += " AND calories <= %s"
                 params.append(max_calories)
 
-            # Filtro por etiquetas (convierte el array de etiquetas a texto para buscar coincidencia)
+            # Filtro por etiquetas
             if tag:
                 query += " AND tags::text ILIKE %s"
                 params.append(f"%{tag}%")
@@ -67,6 +66,38 @@ def get_meals(
                 },
                 "meals": meals
             }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al consultar la base de datos: {str(e)}"
+        )
+    finally:
+        conn.close()
+
+
+@app.get("/meals/{meal_id}")
+def get_meal_by_id(meal_id: int):
+    """
+    Obtiene la información detallada de una sola comida mediante su ID único.
+    """
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # Consultamos la vista filtrando por el ID único
+            cursor.execute("SELECT * FROM v_meals_full_info WHERE meal_id = %s;", (meal_id,))
+            meal = cursor.fetchone()  # fetchone() trae solo 1 registro (o None)
+
+            # Si el ID no existe en la base de datos
+            if not meal:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"No se encontró ninguna comida con el ID {meal_id}"
+                )
+
+            return meal
+    except HTTPException:
+        # Re-elevamos la excepción HTTP 404 para que no la capture el except genérico
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
