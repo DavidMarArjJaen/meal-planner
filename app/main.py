@@ -437,3 +437,137 @@ def update_meal_plan(plan_id: int, plan: PlanCreate):
         )
     finally:
         conn.close()
+
+
+from app.schemas import MealCreate  # Actualizar importaciones
+
+# --- ENDPOINTS CRUD PARA MEALS ---
+
+@app.post("/meals", response_model=MealResponse, status_code=status.HTTP_201_CREATED)
+def create_meal(meal: MealCreate):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            query = """
+                INSERT INTO meals (name, description, category_id, prep_time_minutes, calories, protein_g, carbs_g, fat_g)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id;
+            """
+            cursor.execute(query, (
+                meal.name,
+                meal.description,
+                meal.category_id,
+                meal.prep_time_minutes,
+                meal.calories,
+                meal.protein_g,
+                meal.carbs_g,
+                meal.fat_g
+            ))
+            new_meal_id = cursor.fetchone()["id"]
+            conn.commit()
+
+            # Consultamos la vista para devolver el objeto completo serializado por MealResponse
+            cursor.execute("SELECT * FROM v_meals_full_info WHERE meal_id = %s;", (new_meal_id,))
+            return cursor.fetchone()
+
+    except psycopg2.IntegrityError as e:
+        conn.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error de integridad. Verifica que el 'category_id' ({meal.category_id}) exista en la base de datos."
+        )
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al crear el plato: {str(e)}")
+    finally:
+        conn.close()
+
+
+@app.put("/meals/{meal_id}", response_model=MealResponse)
+def update_meal(meal_id: int, meal: MealCreate):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            query = """
+                UPDATE meals
+                SET name = %s,
+                    description = %s,
+                    category_id = %s,
+                    prep_time_minutes = %s,
+                    calories = %s,
+                    protein_g = %s,
+                    carbs_g = %s,
+                    fat_g = %s
+                WHERE id = %s
+                RETURNING id;
+            """
+            cursor.execute(query, (
+                meal.name,
+                meal.description,
+                meal.category_id,
+                meal.prep_time_minutes,
+                meal.calories,
+                meal.protein_g,
+                meal.carbs_g,
+                meal.fat_g,
+                meal_id
+            ))
+            updated = cursor.fetchone()
+
+            if not updated:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"No se encontró ningún plato con el ID {meal_id} para actualizar."
+                )
+
+            conn.commit()
+
+            # Consultamos la vista para obtener el plato actualizado con su categoría y etiquetas
+            cursor.execute("SELECT * FROM v_meals_full_info WHERE meal_id = %s;", (meal_id,))
+            return cursor.fetchone()
+
+    except psycopg2.IntegrityError:
+        conn.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error de integridad. El 'category_id' ({meal.category_id}) no existe."
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al actualizar el plato: {str(e)}")
+    finally:
+        conn.close()
+
+
+@app.delete("/meals/{meal_id}", status_code=status.HTTP_200_OK)
+def delete_meal(meal_id: int):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM meals WHERE id = %s RETURNING id;", (meal_id,))
+            deleted = cursor.fetchone()
+
+            if not deleted:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"No se encontró ningún plato con el ID {meal_id} para eliminar."
+                )
+
+            conn.commit()
+            return {"message": f"El plato con ID {meal_id} fue eliminado correctamente."}
+
+    except psycopg2.IntegrityError:
+        conn.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="No se puede eliminar este plato porque está siendo utilizado en uno o más planes semanales."
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al eliminar el plato: {str(e)}")
+    finally:
+        conn.close()

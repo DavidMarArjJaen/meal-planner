@@ -64,3 +64,14 @@ class PlanResponse(BaseModel):
     target_calories: Optional[int] = None
     start_date: Optional[date] = None
     items: List[PlanItemResponse] = []
+
+
+class MealCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=120, description="Nombre del plato")
+    description: Optional[str] = Field(None, description="Descripción detallada o preparación")
+    category_id: int = Field(..., description="ID de la categoría (1: Desayuno, 2: Almuerzo, 3: Cena, 4: Snack)")
+    prep_time_minutes: Optional[int] = Field(20, ge=1, description="Tiempo de preparación en minutos")
+    calories: Optional[int] = Field(0, ge=0)
+    protein_g: Optional[float] = Field(0.0, ge=0.0)
+    carbs_g: Optional[float] = Field(0.0, ge=0.0)
+    fat_g: Optional[float] = Field(0.0, ge=0.0)
