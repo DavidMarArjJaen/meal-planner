@@ -34,3 +34,33 @@ class MealListResponse(BaseModel):
     total_returned: int
     filters_applied: FiltersApplied
     meals: List[MealResponse]
+
+from datetime import date
+
+# --- ESQUEMAS PARA PLANES DE COMIDA ---
+
+class PlanItemCreate(BaseModel):
+    meal_id: int
+    day_of_week: str = Field(..., description="Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo")
+    meal_type: str = Field(..., description="Desayuno, Almuerzo, Cena, Snack")
+    servings: Optional[int] = Field(1, ge=1)
+
+class PlanCreate(BaseModel):
+    name: str = Field(..., min_length=3, max_length=120)
+    description: Optional[str] = None
+    target_calories: Optional[int] = Field(None, ge=500, le=10000)
+    start_date: Optional[date] = None
+    items: List[PlanItemCreate] = Field(..., min_items=1)
+
+class PlanItemResponse(PlanItemCreate):
+    id: int
+    plan_id: int
+    meal_name: Optional[str] = None
+
+class PlanResponse(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = None
+    target_calories: Optional[int] = None
+    start_date: Optional[date] = None
+    items: List[PlanItemResponse] = []

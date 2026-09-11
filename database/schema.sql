@@ -59,3 +59,35 @@ INSERT INTO meals (name, description, category_id, prep_time_minutes, calories, 
     ('Salmón al Horno con Espárragos', 'Lomo de salmón fresco horneado con espárragos', 3, 20, 480, 38.0, 6.0, 32.0),
     ('Tortilla de Espinacas y Queso Feta', 'Tortilla de 3 huevos con espinacas frescas y queso feta', 3, 12, 320, 22.0, 4.0, 24.0)
 ON CONFLICT DO NOTHING;
+
+
+-- 1. Tabla Principal: Planes de Comida
+CREATE TABLE IF NOT EXISTS meal_plans (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(120) NOT NULL,
+    description TEXT,
+    target_calories INT,
+    start_date DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Tabla Detalle: Asignación de Platos por Día y Momento
+CREATE TABLE IF NOT EXISTS meal_plan_items (
+    id SERIAL PRIMARY KEY,
+    plan_id INT NOT NULL REFERENCES meal_plans(id) ON DELETE CASCADE,
+    meal_id INT NOT NULL REFERENCES meals(id) ON DELETE RESTRICT,
+    day_of_week VARCHAR(15) NOT NULL CHECK (
+        day_of_week IN ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo')
+    ),
+    meal_type VARCHAR(50) NOT NULL CHECK (
+        meal_type IN ('Desayuno', 'Almuerzo', 'Cena', 'Snack')
+    ),
+    servings INT DEFAULT 1 CHECK (servings > 0),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Evita duplicar el mismo tipo de comida en el mismo día dentro del mismo plan
+    CONSTRAINT unique_meal_slot_per_day UNIQUE (plan_id, day_of_week, meal_type)
+);
+
+-- Índices para optimizar las consultas frecuentes por plan
+CREATE INDEX IF NOT EXISTS idx_meal_plan_items_plan_id ON meal_plan_items(plan_id);
