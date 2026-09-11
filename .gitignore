@@ -20,3 +20,10 @@ Thumbs.db
 # Archivos extra innecesarios 
 Comandos utiles.txt
 database_schema.png:Zone.Identifier
+
+# Archivos de compilación y caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
