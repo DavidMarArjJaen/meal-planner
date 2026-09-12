@@ -66,63 +66,47 @@ meal-planner/
 ## 🚀 Guía de Instalación y Configuración Local
 
 ### 1. Clonar el Repositorio
-
 ```bash
-git clone [https://github.com/TU_USUARIO/meal-planner.git](https://github.com/TU_USUARIO/meal-planner.git)
+git clone https://github.com/TU_USUARIO/meal-planner.git
 cd meal-planner
-
 ```
 
 ### 2. Crear y Activar el Entorno Virtual
-
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-
 ```
 
 ### 3. Instalar Dependencias
-
 ```bash
 pip install -r requirements.txt
-
 ```
 
 ### 4. Configurar Variables de Entorno
-
 Crea un archivo `.env` en la raíz tomando como referencia `.env.example`:
-
 ```env
 DB_NAME=meal_planner
 DB_USER=postgres
 DB_PASSWORD=tu_contraseña
 DB_HOST=127.0.0.1
 DB_PORT=5432
-
 ```
 
 ### 5. Aplicar Migraciones de la Base de Datos
-
 ```bash
 psql -h 127.0.0.1 -U postgres -d meal_planner -f database/schema.sql
-
 ```
 
 ### 6. Cargar Datos Semilla de Ejemplo
-
 ```bash
 python database/seed.py
-
 ```
 
 ### 7. Iniciar el Servidor de Desarrollo
-
 ```bash
 uvicorn app.main:app --reload
-
 ```
-
-Accede a la documentación interactiva e intuitiva de Swagger UI en **`http://127.0.0.1:8000/docs`**.
+Accede a la documentación interactiva e intuitiva de Swagger UI en **`[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)`**.
 
 ---
 
@@ -131,7 +115,7 @@ Accede a la documentación interactiva e intuitiva de Swagger UI en **`http://12
 ### 🥗 Módulo de Comidas (`/meals`)
 
 | Método | Endpoint | Descripción | Código HTTP |
-| --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- |
 | `GET` | `/meals` | Obtiene el catálogo de comidas con paginación (`limit`, `offset`) | `200 OK` |
 | `GET` | `/meals/{meal_id}` | Obtiene los detalles de un plato por su ID desde `v_meals_full_info` | `200 OK` / `404` |
 | `POST` | `/meals` | Registra un nuevo plato en el catálogo | `201 Created` / `400` |
@@ -141,7 +125,7 @@ Accede a la documentación interactiva e intuitiva de Swagger UI en **`http://12
 ### 📅 Módulo de Planes Semanales (`/plans`)
 
 | Método | Endpoint | Descripción | Código HTTP |
-| --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- |
 | `POST` | `/plans` | Crea un plan semanal completo con sus platos asignados (Transaccional) | `201 Created` / `400` |
 | `GET` | `/plans` | Lista todos los planes registrados con desglose de días y platos | `200 OK` |
 | `GET` | `/plans/{plan_id}` | Obtiene un plan semanal específico por su ID | `200 OK` / `404` |
