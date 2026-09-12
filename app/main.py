@@ -1,8 +1,8 @@
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Query
 from app.database import get_db_connection
-from app.schemas import MealResponse, MealListResponse  # <--- Importamos los esquemas
-
+from app.schemas import MealResponse, MealListResponse, ShoppingListResponse  # <--- Importamos los esquemas
+from psycopg2.extras import RealDictCursor
 app = FastAPI(
     title="Meal Planner AI API",
     description="API para la gestión de comidas, planes semanales y recomendaciones con IA.",
@@ -98,7 +98,8 @@ from app.schemas import (
     MealResponse, 
     MealListResponse, 
     PlanCreate, 
-    PlanResponse
+    PlanResponse,
+    ShoppingListResponse
 )
 
 @app.post("/plans", response_model=PlanResponse, status_code=status.HTTP_201_CREATED)
@@ -570,4 +571,49 @@ def delete_meal(meal_id: int):
         conn.rollback()
         raise HTTPException(status_code=500, detail=f"Error al eliminar el plato: {str(e)}")
     finally:
+        conn.close()
+
+
+
+@app.get("/plans/{plan_id}/shopping-list", response_model=ShoppingListResponse, tags=["Planes"])
+def get_shopping_list(plan_id: int):
+    """
+    Consolida y suma todos los ingredientes requeridos para los platos
+    asignados a un plan de comidas específico.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        # 1. Comprobar que el plan existe
+        cursor.execute("SELECT id, name FROM meal_plans WHERE id = %s;", (plan_id,))
+        plan = cursor.fetchone()
+        
+        if not plan:
+            raise HTTPException(status_code=404, detail="El plan de comidas no existe")
+        
+        # 2. Consultar y consolidar ingredientes agrupados por nombre y unidad
+        query = """
+            SELECT 
+                i.name AS ingredient,
+                ROUND(SUM(mi.amount)::numeric, 2) AS total_amount,
+                mi.unit
+            FROM meal_plan_items mpi
+            JOIN meal_ingredients mi ON mpi.meal_id = mi.meal_id
+            JOIN ingredients i ON mi.ingredient_id = i.id
+            WHERE mpi.plan_id = %s
+            GROUP BY i.name, mi.unit
+            ORDER BY i.name ASC;
+        """
+        cursor.execute(query, (plan_id,))
+        shopping_items = cursor.fetchall()
+        
+        return {
+            "plan_id": plan["id"],
+            "plan_name": plan["name"],
+            "items": shopping_items
+        }
+
+    finally:
+        cursor.close()
         conn.close()

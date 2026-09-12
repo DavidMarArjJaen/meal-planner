@@ -75,3 +75,17 @@ class MealCreate(BaseModel):
     protein_g: Optional[float] = Field(0.0, ge=0.0)
     carbs_g: Optional[float] = Field(0.0, ge=0.0)
     fat_g: Optional[float] = Field(0.0, ge=0.0)
+
+
+
+# --- Esquemas para Lista de la Compra ---
+
+class ShoppingListItem(BaseModel):
+    ingredient: str
+    total_amount: float
+    unit: str
+
+class ShoppingListResponse(BaseModel):
+    plan_id: int
+    plan_name: str
+    items: List[ShoppingListItem]
