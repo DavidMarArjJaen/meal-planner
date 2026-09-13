@@ -1,12 +1,22 @@
 from typing import List, Optional
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, status
 from app.database import get_db_connection
 from app.schemas import MealResponse, MealListResponse, ShoppingListResponse  # <--- Importamos los esquemas
 from psycopg2.extras import RealDictCursor
+from fastapi.middleware.cors import CORSMiddleware  # <-- Añade esta línea
 app = FastAPI(
     title="Meal Planner AI API",
     description="API para la gestión de comidas, planes semanales y recomendaciones con IA.",
     version="0.1.0"
+)
+
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite peticiones desde cualquier origen (ideal para desarrollo)
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Permite todos los encabezados
 )
 
 @app.get("/")
