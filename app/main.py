@@ -256,7 +256,83 @@ def get_meal_plans():
     finally:
         conn.close()
 
+# GET: Obtener el plan semanal utilizando las tablas reales (meal_plan_items y meals)
+@app.get("/weekly-plan")
+def get_weekly_plan(plan_id: int = 1):
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cursor.execute("""
+            SELECT 
+                mpi.id,
+                mpi.plan_id,
+                mpi.day_of_week,
+                mpi.meal_type,
+                mpi.meal_id,
+                m.name AS meal_name
+            FROM meal_plan_items mpi
+            JOIN meals m ON mpi.meal_id = m.id
+            WHERE mpi.plan_id = %s
+            ORDER BY mpi.id ASC;
+        """, (plan_id,))
+        plan = cursor.fetchall()
+        return {"plan": plan}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en BD: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
 
+# POST: Agregar plato al plan semanal en meal_plan_items
+@app.post("/weekly-plan")
+def add_to_weekly_plan(item: dict):
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        # 1. Asegurar que existe al menos un plan base para asociar los items
+        cursor.execute("SELECT id FROM meal_plans ORDER BY id ASC LIMIT 1;")
+        plan_row = cursor.fetchone()
+        
+        if plan_row:
+            target_plan_id = item.get("plan_id", plan_row["id"])
+        else:
+            # Si no hay ningún plan en la base de datos, creamos uno por defecto
+            cursor.execute("""
+                INSERT INTO meal_plans (name, description, target_calories, start_date)
+                VALUES ('Plan Semanal Principal', 'Plan creado automáticamente', 2000, CURRENT_DATE)
+                RETURNING id;
+            """)
+            target_plan_id = cursor.fetchone()["id"]
+
+        # 2. Insertar el plato en la tabla meal_plan_items
+        cursor.execute("""
+            INSERT INTO meal_plan_items (plan_id, day_of_week, meal_type, meal_id, servings)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id;
+        """, (
+            target_plan_id,
+            item.get("day_of_week"),
+            item.get("meal_type"),
+            item.get("meal_id"),
+            item.get("portions", item.get("servings", 1))
+        ))
+        
+        new_id = cursor.fetchone()["id"]
+        conn.commit()
+        return {"message": "Añadido con éxito", "id": new_id, "plan_id": target_plan_id}
+        
+    except psycopg2.IntegrityError as e:
+        conn.rollback()
+        raise HTTPException(
+            status_code=400, 
+            detail="Error de integridad. Verifica que el 'meal_id' exista en la base de datos."
+        )
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al guardar plato: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.get("/plans/{plan_id}", response_model=PlanResponse)
 def get_meal_plan_by_id(plan_id: int):
@@ -634,48 +710,127 @@ def get_shopping_list(plan_id: int):
 
 
 
-# Definición del modelo Pydantic flexible sin restricciones de longitud mínima en items
-class PlanCreate(BaseModel):
+# Modelo Pydantic para la creación de un nuevo plato
+class MealCreate(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
-    name: Optional[str] = None
-    title: Optional[str] = None
+    name: str
+    category: Optional[str] = "Almuerzo"
+    category_id: Optional[int] = 2
+    calories: Optional[int] = 0
+    protein: Optional[float] = 0.0
+    carbs: Optional[float] = 0.0
+    fat: Optional[float] = 0.0
     description: Optional[str] = ""
-    items: Optional[List[Any]] = []
 
-# Endpoint POST /plans
-@app.post("/plans", status_code=201)
-def create_plan(plan: PlanCreate):
+# GET /meals - Obtener todos los platos del catálogo
+@app.get("/meals")
+def get_meals(limit: int = 100):  # Subimos el límite por defecto a 100
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
-
-    plan_name = (plan.name or plan.title or "Nuevo Plan").strip()
-    plan_desc = (plan.description or "").strip()
-
     try:
-        try:
-            cursor.execute(
-                "INSERT INTO meal_plans (name, description) VALUES (%s, %s) RETURNING id, name, description;",
-                (plan_name, plan_desc)
-            )
-        except Exception:
-            conn.rollback()
-            cursor.execute(
-                "INSERT INTO plans (name, description) VALUES (%s, %s) RETURNING id, name, description;",
-                (plan_name, plan_desc)
-            )
-
-        new_plan = cursor.fetchone()
-        conn.commit()
-        return new_plan
-
-    except Exception as e:
-        conn.rollback()
-        print(f"❌ Error al crear plan: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error en BD: {str(e)}")
+        cursor.execute("""
+            SELECT 
+                m.id AS meal_id,
+                m.name AS meal_name,
+                m.description,
+                COALESCE(c.name, 'Almuerzo') AS category,
+                m.calories,
+                m.protein AS protein_g,
+                m.carbs AS carbs_g,
+                m.fat AS fat_g
+            FROM meals m
+            LEFT JOIN categories c ON m.category_id = c.id
+            ORDER BY m.id DESC -- Importante: Los creados recientemente salen PRIMERO
+            LIMIT %s;
+        """, (limit,))
+        
+        meals = cursor.fetchall()
+        return {
+            "total_returned": len(meals),
+            "meals": meals
+        }
     finally:
         cursor.close()
         conn.close()
+
+
+# POST /meals - Crear un nuevo plato en el catálogo
+@app.post("/meals", status_code=201)
+def create_meal(meal: MealCreate):
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    try:
+        cat_id = meal.category_id
+
+        # 1. Si no viene category_id, buscar o crear la categoría a partir del nombre en texto
+        if not cat_id and meal.category:
+            cat_name = meal.category.strip()
+            # Intentar obtener el id de la categoría existente
+            cursor.execute("SELECT id FROM categories WHERE LOWER(name) = LOWER(%s);", (cat_name,))
+            cat_row = cursor.fetchone()
+            
+            if cat_row:
+                cat_id = cat_row['id']
+            else:
+                # Si la categoría no existe en la BD, la insertamos dinámicamente
+                cursor.execute(
+                    "INSERT INTO categories (name) VALUES (%s) RETURNING id;",
+                    (cat_name,)
+                )
+                cat_id = cursor.fetchone()['id']
+
+        # 2. Intentar insertar en la tabla meals probando esquema con category_id y fallback a category
+        try:
+            cursor.execute(
+                """
+                INSERT INTO meals (name, category_id, calories, protein, carbs, fat, description)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING id, name, category_id, calories, protein, carbs, fat, description;
+                """,
+                (
+                    meal.name.strip(),
+                    cat_id or 1,
+                    meal.calories or 0,
+                    meal.protein or 0.0,
+                    meal.carbs or 0.0,
+                    meal.fat or 0.0,
+                    (meal.description or "").strip()
+                )
+            )
+        except Exception:
+            # Fallback en caso de que la tabla meals use directamente una columna de texto 'category'
+            conn.rollback()
+            cursor.execute(
+                """
+                INSERT INTO meals (name, category, calories, protein, carbs, fat, description)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING id, name, category, calories, protein, carbs, fat, description;
+                """,
+                (
+                    meal.name.strip(),
+                    meal.category or "Almuerzo",
+                    meal.calories or 0,
+                    meal.protein or 0.0,
+                    meal.carbs or 0.0,
+                    meal.fat or 0.0,
+                    (meal.description or "").strip()
+                )
+            )
+
+        new_meal = cursor.fetchone()
+        conn.commit()
+        return new_meal
+
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error al crear plato: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en BD al crear plato: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
+
 
 # Endpoint: Eliminar un plan semanal por ID
 @app.delete("/plans/{plan_id}", status_code=200)
@@ -711,6 +866,30 @@ def delete_plan(plan_id: int):
         conn.rollback()
         print(f"❌ Error al eliminar el plan: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error en BD: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.delete("/meals/{meal_id}")
+def delete_meal(meal_id: int):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        # Primero eliminar ingredientes del plato si existen en tabla intermedia
+        cursor.execute("DELETE FROM meal_ingredients WHERE meal_id = %s;", (meal_id,))
+        
+        # Eliminar el plato
+        cursor.execute("DELETE FROM meals WHERE id = %s;", (meal_id,))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Plato no encontrado")
+            
+        return {"message": "Plato eliminado correctamente", "meal_id": meal_id}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
     finally:
         cursor.close()
         conn.close()
