@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Utensils, ShoppingCart } from 'lucide-react';
+import { Utensils, ShoppingCart, Calendar } from 'lucide-react';
 import MealsList from './components/MealsList';
-import ShoppingList from './components/ShoppingList'; // <-- Importamos ShoppingList
+import ShoppingList from './components/ShoppingList';
+import WeeklyPlan from './components/WeeklyPlan'; // <-- Importación del nuevo componente
 
 function App() {
-  const [activeTab, setActiveTab] = useState('meals');
+  const [activeTab, setActiveTab] = useState('plan'); // 'plan' como pestaña por defecto
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
@@ -20,6 +21,18 @@ function App() {
 
           <nav className="flex space-x-2">
             <button
+              onClick={() => setActiveTab('plan')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === 'plan'
+                  ? 'bg-emerald-50 text-emerald-700'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <Calendar className="w-4 h-4" />
+              Plan Semanal
+            </button>
+
+            <button
               onClick={() => setActiveTab('meals')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === 'meals'
@@ -30,6 +43,7 @@ function App() {
               <Utensils className="w-4 h-4" />
               Platos
             </button>
+
             <button
               onClick={() => setActiveTab('shopping')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -47,6 +61,7 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {activeTab === 'plan' && <WeeklyPlan planId={1} />}
         {activeTab === 'meals' && <MealsList />}
         {activeTab === 'shopping' && <ShoppingList planId={1} />}
       </main>
