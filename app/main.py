@@ -4,6 +4,9 @@ from app.database import get_db_connection
 from app.schemas import MealResponse, MealListResponse, ShoppingListResponse  # <--- Importamos los esquemas
 from psycopg2.extras import RealDictCursor
 from fastapi.middleware.cors import CORSMiddleware  # <-- Añade esta línea
+from pydantic import BaseModel, ConfigDict
+
+
 app = FastAPI(
     title="Meal Planner AI API",
     description="API para la gestión de comidas, planes semanales y recomendaciones con IA.",
@@ -624,6 +627,90 @@ def get_shopping_list(plan_id: int):
             "items": shopping_items
         }
 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+
+# Definición del modelo Pydantic flexible sin restricciones de longitud mínima en items
+class PlanCreate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    name: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = ""
+    items: Optional[List[Any]] = []
+
+# Endpoint POST /plans
+@app.post("/plans", status_code=201)
+def create_plan(plan: PlanCreate):
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    plan_name = (plan.name or plan.title or "Nuevo Plan").strip()
+    plan_desc = (plan.description or "").strip()
+
+    try:
+        try:
+            cursor.execute(
+                "INSERT INTO meal_plans (name, description) VALUES (%s, %s) RETURNING id, name, description;",
+                (plan_name, plan_desc)
+            )
+        except Exception:
+            conn.rollback()
+            cursor.execute(
+                "INSERT INTO plans (name, description) VALUES (%s, %s) RETURNING id, name, description;",
+                (plan_name, plan_desc)
+            )
+
+        new_plan = cursor.fetchone()
+        conn.commit()
+        return new_plan
+
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error al crear plan: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en BD: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
+
+# Endpoint: Eliminar un plan semanal por ID
+@app.delete("/plans/{plan_id}", status_code=200)
+def delete_plan(plan_id: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        # 1. Eliminar los ítems asociados al plan primero (por integridad referencial si no hay ON DELETE CASCADE)
+        try:
+            cursor.execute("DELETE FROM plan_items WHERE plan_id = %s;", (plan_id,))
+        except Exception:
+            conn.rollback()
+            cursor.execute("DELETE FROM meal_plan_items WHERE plan_id = %s;", (plan_id,))
+
+        # 2. Eliminar el plan
+        try:
+            cursor.execute("DELETE FROM meal_plans WHERE id = %s RETURNING id;", (plan_id,))
+        except Exception:
+            conn.rollback()
+            cursor.execute("DELETE FROM plans WHERE id = %s RETURNING id;", (plan_id,))
+
+        deleted_plan = cursor.fetchone()
+        if not deleted_plan:
+            conn.rollback()
+            raise HTTPException(status_code=404, detail="Plan no encontrado")
+
+        conn.commit()
+        return {"message": "Plan eliminado correctamente", "id": plan_id}
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        conn.rollback()
+        print(f"❌ Error al eliminar el plan: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en BD: {str(e)}")
     finally:
         cursor.close()
         conn.close()
