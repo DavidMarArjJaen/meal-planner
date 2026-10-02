@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Utensils, ShoppingCart, Calendar } from 'lucide-react';
 import MealsList from './components/MealsList';
 import ShoppingList from './components/ShoppingList';
-import WeeklyPlan from './components/WeeklyPlan'; // <-- Importación del nuevo componente
+import WeeklyPlan from './components/WeeklyPlan';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('plan'); // 'plan' como pestaña por defecto
+  const [activeTab, setActiveTab] = useState('plan');
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
@@ -61,9 +61,9 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-8">
-        {activeTab === 'plan' && <WeeklyPlan planId={1} />}
+        {activeTab === 'plan' && <WeeklyPlan />}
         {activeTab === 'meals' && <MealsList />}
-        {activeTab === 'shopping' && <ShoppingList planId={1} />}
+        {activeTab === 'shopping' && <ShoppingList />}
       </main>
     </div>
   );

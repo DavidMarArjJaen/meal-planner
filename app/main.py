@@ -893,3 +893,28 @@ def delete_meal(meal_id: int):
     finally:
         cursor.close()
         conn.close()
+
+
+# DELETE: Eliminar un plato específico del plan semanal por su ID de ítem
+@app.delete("/weekly-plan/{item_id}", status_code=200)
+def delete_weekly_plan_item(item_id: int):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM meal_plan_items WHERE id = %s RETURNING id;", (item_id,))
+        deleted = cursor.fetchone()
+        
+        if not deleted:
+            raise HTTPException(status_code=404, detail="Item no encontrado en el plan")
+            
+        conn.commit()
+        return {"message": "Plato eliminado del plan correctamente", "id": item_id}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Error en BD al eliminar item: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
+

@@ -1,190 +1,304 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
-import CreateMealModal from './CreateMealModal';
-import { Plus, Search, Utensils, Flame, Trash2 } from 'lucide-react';
-
-const CATEGORIES = ['Todos', 'Desayuno', 'Almuerzo', 'Cena', 'Snack'];
+import { Utensils, Plus, Trash2, Search, Edit3, X } from 'lucide-react';
 
 export default function MealsList() {
   const [meals, setMeals] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('Todos');
-  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState(null);
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Todas');
 
-const fetchMeals = () => {
-  setLoading(true);
-  // Pedimos un límite más alto y agregamos timestamp para evitar caché
-  api.get(`/meals?limit=100&_t=${Date.now()}`)
-    .then((res) => {
-      const mealsArray = res.data?.meals || (Array.isArray(res.data) ? res.data : []);
-      setMeals(mealsArray);
+  // Estado del formulario
+  const [showModal, setShowModal] = useState(false);
+  const [editingMeal, setEditingMeal] = useState(null);
+
+  const [name, setName] = useState('');
+  const [category, setCategory] = useState('Almuerzo');
+  const [calories, setCalories] = useState('');
+  const [description, setDescription] = useState('');
+
+  // Lista de ingredientes para el plato
+  const [ingredients, setIngredients] = useState([]);
+  const [ingName, setIngName] = useState('');
+  const [ingAmount, setIngAmount] = useState('');
+  const [ingUnit, setIngUnit] = useState('g');
+
+  const categories = ['Todas', 'Desayuno', 'Almuerzo', 'Cena', 'Snack', 'Postre'];
+
+  const CATEGORY_TO_ID = {
+    'Desayuno': 1,
+    'Almuerzo': 2,
+    'Cena': 3,
+    'Snack': 4,
+    'Postre': 4
+  };
+
+  const ID_TO_CATEGORY = {
+    1: 'Desayuno',
+    2: 'Almuerzo',
+    3: 'Cena',
+    4: 'Snack'
+  };
+
+  // Cargar platos con sanitización de tipos
+  const fetchMeals = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/meals?limit=100&_t=${Date.now()}`);
+      const rawList = res.data?.meals || (Array.isArray(res.data) ? res.data : []);
+
+      const normalizedList = rawList.map((meal) => {
+        let ingredientsArray = [];
+
+        if (Array.isArray(meal.ingredients)) {
+          ingredientsArray = meal.ingredients;
+        } else if (typeof meal.ingredients_list === 'string' && meal.ingredients_list.trim()) {
+          ingredientsArray = meal.ingredients_list.split(',').map((str) => ({
+            name: str.trim(),
+            amount: '',
+            unit: ''
+          }));
+        }
+
+        return {
+          ...meal,
+          ingredients: ingredientsArray
+        };
+      });
+
+      setMeals(normalizedList);
+    } catch (err) {
+      console.error('Error al cargar platos:', err);
+      setMeals([]);
+    } finally {
       setLoading(false);
-    })
-    .catch((err) => {
-      console.error("Error al obtener catálogo de platos:", err);
-      setLoading(false);
-    });
-};
+    }
+  };
 
   useEffect(() => {
     fetchMeals();
   }, []);
 
-  const handleMealCreated = (newMeal) => {
-    if (newMeal) {
-      setMeals((prevMeals) => [newMeal, ...prevMeals]);
+  // Abrir Modal
+  const handleOpenModal = (meal = null) => {
+    if (meal) {
+      setEditingMeal(meal);
+      setName(meal.name || meal.meal_name || '');
+      
+      const categoryName = meal.category || ID_TO_CATEGORY[meal.category_id] || 'Almuerzo';
+      setCategory(categoryName);
+      setCalories(meal.calories || '');
+      setDescription(meal.description || '');
+
+      setIngredients(Array.isArray(meal.ingredients) ? meal.ingredients : []);
     } else {
+      setEditingMeal(null);
+      setName('');
+      setCategory('Almuerzo');
+      setCalories('');
+      setDescription('');
+      setIngredients([]);
+    }
+
+    setIngName('');
+    setIngAmount('');
+    setIngUnit('g');
+    setShowModal(true);
+  };
+
+  // Agregar ingrediente al array local
+  const handleAddIngredient = () => {
+    if (!ingName.trim()) return;
+
+    const newIng = {
+      name: ingName.trim(),
+      amount: parseFloat(ingAmount) || 1,
+      unit: ingUnit
+    };
+
+    setIngredients([...ingredients, newIng]);
+    setIngName('');
+    setIngAmount('');
+    setIngUnit('g');
+  };
+
+  // Quitar ingrediente
+  const handleRemoveIngredient = (index) => {
+    setIngredients(ingredients.filter((_, i) => i !== index));
+  };
+
+  // Guardar Plato
+  const handleSaveMeal = async (e) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    const payload = {
+      name: name.trim(),
+      description: description.trim(),
+      category_id: CATEGORY_TO_ID[category] || 2,
+      prep_time_minutes: 20,
+      calories: Number(calories) || 0,
+      protein_g: 0.0,
+      carbs_g: 0.0,
+      fat_g: 0.0,
+      ingredients: ingredients
+    };
+
+    try {
+      if (editingMeal) {
+        const mealId = editingMeal.id || editingMeal.meal_id;
+        await api.put(`/meals/${mealId}`, payload);
+      } else {
+        await api.post('/meals', payload);
+      }
+      setShowModal(false);
       fetchMeals();
+    } catch (err) {
+      console.error('Error al guardar:', err.response?.data || err);
+      alert('Error al guardar el plato. Revisa que el backend acepte estos datos.');
     }
   };
 
-  // Función para eliminar plato
-  const handleDeleteMeal = async (mealId, mealName) => {
-    const confirmDelete = window.confirm(`¿Estás seguro de que deseas eliminar "${mealName}"?`);
-    if (!confirmDelete) return;
-
-    setDeletingId(mealId);
+  const handleDeleteMeal = async (mealId) => {
+    if (!window.confirm('¿Seguro que deseas eliminar este plato?')) return;
     try {
       await api.delete(`/meals/${mealId}`);
-      // Eliminar de la lista local en el frontend
-      setMeals((prevMeals) => prevMeals.filter((m) => (m.meal_id || m.id) !== mealId));
+      fetchMeals();
     } catch (err) {
-      console.error('Error al eliminar plato:', err);
-      alert('No se pudo eliminar el plato. Revisa si está asociado a un menú diario.');
-    } finally {
-      setDeletingId(null);
+      console.error('Error al eliminar:', err);
     }
   };
 
   const filteredMeals = meals.filter((meal) => {
-    const mealCategory = (meal.category || '').toLowerCase().trim();
-    const activeCatLower = activeCategory.toLowerCase().trim();
-
-    const matchesCategory = activeCategory === 'Todos' || mealCategory === activeCatLower;
-    const mealName = meal.meal_name || meal.name || '';
-    const matchesSearch = mealName.toLowerCase().includes(searchQuery.toLowerCase().trim());
-
-    return matchesCategory && matchesSearch;
+    const mealName = (meal.name || meal.meal_name || '').toLowerCase();
+    const matchesSearch = mealName.includes(search.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'Todas' ||
+      (meal.category || '').toLowerCase() === selectedCategory.toLowerCase();
+    return matchesSearch && matchesCategory;
   });
 
   return (
     <div className="space-y-6">
-      {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-extrabold text-slate-800 flex items-center gap-2">
             <Utensils className="w-6 h-6 text-emerald-600" />
             Catálogo de Platos
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Explora las recetas disponibles o añade nuevas preparaciones.
+            Crea y gestiona tus recetas junto con sus ingredientes.
           </p>
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm transition-colors shadow-xs cursor-pointer"
+          onClick={() => handleOpenModal()}
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          Nuevo Plato
+          Añadir Nuevo Plato
         </button>
       </div>
 
-      {/* Buscador y Pestañas */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl overflow-x-auto">
-          {CATEGORIES.map((cat) => (
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <input
+            type="text"
+            placeholder="Buscar plato..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs"
+          />
+        </div>
+
+        <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0">
+          {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                activeCategory === cat
-                  ? 'bg-white text-emerald-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-white border border-slate-200 text-slate-600'
               }`}
             >
               {cat}
             </button>
           ))}
         </div>
-
-        <div className="relative min-w-[240px]">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Buscar plato por nombre..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 transition-all"
-          />
-        </div>
       </div>
 
-      {/* Listado */}
       {loading ? (
-        <div className="py-12 text-center text-slate-500 text-sm">
-          Cargando catálogo...
-        </div>
+        <div className="py-12 text-center text-xs text-slate-500">Cargando platos...</div>
       ) : filteredMeals.length === 0 ? (
-        <div className="py-12 text-center text-slate-400 text-sm bg-white rounded-2xl border border-slate-100">
-          No se encontraron platos en la categoría "{activeCategory}".
+        <div className="py-12 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-100">
+          No hay platos para mostrar.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredMeals.map((meal) => {
-            const id = meal.meal_id || meal.id;
-            const name = meal.meal_name || meal.name;
-            const protein = meal.protein_g ?? meal.protein ?? 0;
-            const carbs = meal.carbs_g ?? meal.carbs ?? 0;
-            const fat = meal.fat_g ?? meal.fat ?? 0;
+            const id = meal.id || meal.meal_id;
+            const mealName = meal.name || meal.meal_name;
+            const ingList = Array.isArray(meal.ingredients) ? meal.ingredients : [];
 
             return (
               <div
                 key={id}
-                className="bg-white rounded-2xl border border-slate-100 p-5 shadow-xs hover:border-emerald-200 transition-all flex flex-col justify-between group"
+                className="bg-white p-5 rounded-2xl border border-slate-100 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg uppercase">
                       {meal.category || 'Almuerzo'}
                     </span>
-                    
-                    <div className="flex items-center gap-2">
-                      {meal.calories > 0 && (
-                        <span className="text-xs font-semibold text-slate-500 flex items-center gap-1">
-                          <Flame className="w-3.5 h-3.5 text-amber-500" />
-                          {meal.calories} kcal
-                        </span>
-                      )}
-
-                      {/* Botón Borrar */}
-                      <button
-                        onClick={() => handleDeleteMeal(id, name)}
-                        disabled={deletingId === id}
-                        title="Eliminar plato"
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {meal.calories > 0 && (
+                      <span className="text-[10px] font-semibold text-slate-500">
+                        {meal.calories} kcal
+                      </span>
+                    )}
                   </div>
 
-                  <h3 className="font-bold text-slate-800 text-base mb-1">
-                    {name}
-                  </h3>
+                  <h3 className="font-bold text-slate-800 text-sm mb-1">{mealName}</h3>
+
                   {meal.description && (
                     <p className="text-xs text-slate-500 line-clamp-2 mb-3">
                       {meal.description}
                     </p>
                   )}
+
+                  {ingList.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-slate-100">
+                      <span className="text-[10px] font-bold text-slate-400 block mb-1.5 uppercase">
+                        Ingredientes ({ingList.length}):
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {ingList.map((ing, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[10px] font-medium bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md"
+                          >
+                            {ing.name} {ing.amount ? `(${ing.amount}${ing.unit})` : ''}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center gap-3 pt-3 border-t border-slate-100 text-[11px] text-slate-500 font-medium">
-                  <span>P: {protein}g</span>
-                  <span>C: {carbs}g</span>
-                  <span>G: {fat}g</span>
+                <div className="flex justify-end gap-1 mt-4 pt-3 border-t border-slate-50">
+                  <button
+                    onClick={() => handleOpenModal(meal)}
+                    className="p-1.5 text-slate-400 hover:text-emerald-600 rounded-lg"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteMeal(id)}
+                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             );
@@ -192,12 +306,168 @@ const fetchMeals = () => {
         </div>
       )}
 
-      {/* Modal */}
-      <CreateMealModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onMealCreated={handleMealCreated}
-      />
+      {showModal && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <h3 className="text-base font-bold text-slate-800">
+                {editingMeal ? 'Editar Plato' : 'Crear Nuevo Plato'}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-slate-400 hover:text-slate-600 p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveMeal} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">
+                    Nombre del Plato *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="ej. Pechuga de Pollo"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">
+                    Categoría
+                  </label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
+                  >
+                    <option value="Desayuno">Desayuno</option>
+                    <option value="Almuerzo">Almuerzo</option>
+                    <option value="Cena">Cena</option>
+                    <option value="Snack">Snack</option>
+                    <option value="Postre">Postre</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">
+                    Calorías (kcal)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="ej. 550"
+                    value={calories}
+                    onChange={(e) => setCalories(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Descripción
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Detalles..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs resize-none"
+                />
+              </div>
+
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <label className="block text-xs font-bold text-slate-700">
+                  Ingredientes
+                </label>
+
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    placeholder="Ingrediente (ej. Pollo)"
+                    value={ingName}
+                    onChange={(e) => setIngName(e.target.value)}
+                    className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Cant."
+                    value={ingAmount}
+                    onChange={(e) => setIngAmount(e.target.value)}
+                    className="w-20 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs"
+                  />
+                  <select
+                    value={ingUnit}
+                    onChange={(e) => setIngUnit(e.target.value)}
+                    className="w-20 px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs"
+                  >
+                    <option value="g">g</option>
+                    <option value="kg">kg</option>
+                    <option value="ml">ml</option>
+                    <option value="l">l</option>
+                    <option value="ud">ud</option>
+                    <option value="cda">cda</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={handleAddIngredient}
+                    className="px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-lg"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {ingredients.length > 0 ? (
+                  <div className="space-y-1.5 pt-2">
+                    {ingredients.map((ing, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between bg-white px-3 py-1.5 rounded-lg border border-slate-200 text-xs"
+                      >
+                        <span className="font-medium text-slate-700">
+                          {ing.name} — <strong className="text-emerald-600">{ing.amount} {ing.unit}</strong>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveIngredient(idx)}
+                          className="text-slate-400 hover:text-rose-600 p-0.5"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-slate-400 italic">
+                    Sin ingredientes añadidos.
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
+                >
+                  {editingMeal ? 'Guardar Cambios' : 'Crear Plato'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
