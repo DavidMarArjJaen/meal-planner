@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Optional
+from typing import List, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 # ------------------------------------------------------------------
@@ -18,21 +18,20 @@ class MealIngredientCreate(BaseModel):
     unit: str
 
 
+MealTag = Literal[
+    "Desayuno",
+    "Comida/Cena",
+    "Snack",
+    "Ligero",
+    "Alba",
+]
+
+
 class MealResponse(BaseSchema):
-    """
-    Esquema tolerante para los datos de un plato de la vista v_meals_full_info.
-    Usa Optional en los campos que en la base de datos pueden ser NULL.
-    """
     meal_id: int
     meal_name: str
     description: Optional[str] = None
-    category: Optional[str] = None
-    prep_time_minutes: Optional[int] = Field(None, description="Tiempo de preparación en minutos")
-    calories: Optional[int] = None
-    protein_g: Optional[float] = None
-    carbs_g: Optional[float] = None
-    fat_g: Optional[float] = None
-    tags: Optional[str] = None
+    tags: List[MealTag] = Field(default_factory=list)
     ingredients_list: Optional[str] = None
     ingredients: List[MealIngredientCreate] = Field(default_factory=list)
 
@@ -44,9 +43,7 @@ class FiltersApplied(BaseModel):
     """
     Filtros aplicados en la consulta.
     """
-    category: Optional[str] = None
-    max_calories: Optional[int] = None
-    tag: Optional[str] = None
+    tag: Optional[MealTag] = None
     limit: int
 
 
@@ -61,13 +58,7 @@ class MealListResponse(BaseModel):
 class MealCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=120)
     description: Optional[str] = None
-    category_id: Optional[int] = 2
-    category: Optional[str] = "Almuerzo"
-    prep_time_minutes: Optional[int] = 20
-    calories: Optional[int] = 0
-    protein_g: Optional[float] = 0.0
-    carbs_g: Optional[float] = 0.0
-    fat_g: Optional[float] = 0.0
+    tags: List[MealTag] = Field(default_factory=list)
     ingredients: Optional[List[MealIngredientCreate]] = Field(default_factory=list)
 
 
@@ -84,7 +75,6 @@ class PlanItemCreate(BaseModel):
 class PlanCreate(BaseModel):
     name: str = Field(..., min_length=3, max_length=120)
     description: Optional[str] = None
-    target_calories: Optional[int] = Field(None, ge=500, le=10000)
     start_date: Optional[date] = None
     items: List[PlanItemCreate] = Field(default_factory=list)
 
@@ -99,7 +89,6 @@ class PlanResponse(BaseSchema):
     id: int
     name: str
     description: Optional[str] = None
-    target_calories: Optional[int] = None
     start_date: Optional[date] = None
     items: List[PlanItemResponse] = Field(default_factory=list)
 

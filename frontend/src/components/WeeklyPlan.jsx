@@ -35,7 +35,6 @@ export default function WeeklyPlan() {
   const [showNewPlanModal, setShowNewPlanModal] = useState(false);
   const [newPlanName, setNewPlanName] = useState('');
   const [newPlanDesc, setNewPlanDesc] = useState('');
-  const [newPlanCalories, setNewPlanCalories] = useState(2000);
 
   // 1. Cargar planes y catálogo de comidas
   const fetchData = async () => {
@@ -75,6 +74,7 @@ export default function WeeklyPlan() {
         if (plansList.length > 0) {
           setSelectedPlanId(plansList[0].id);
           setCurrentPlanItems(plansList[0].items || []);
+          localStorage.setItem('activeShoppingPlanId', String(plansList[0].id));
         }
         setErrorMsg(null);
       })
@@ -93,6 +93,7 @@ export default function WeeklyPlan() {
 
   const handlePlanChange = (planId) => {
     setSelectedPlanId(planId);
+    localStorage.setItem('activeShoppingPlanId', String(planId));
     const activePlan = plans.find((p) => p.id === Number(planId));
     setCurrentPlanItems(activePlan ? activePlan.items || [] : []);
   };
@@ -106,10 +107,10 @@ export default function WeeklyPlan() {
       const res = await api.post('/plans', {
         name: newPlanName,
         description: newPlanDesc,
-        target_calories: Number(newPlanCalories),
         items: []
       });
 
+      localStorage.setItem('activeShoppingPlanId', String(res.data.id));
       setShowNewPlanModal(false);
       setNewPlanName('');
       setNewPlanDesc('');
@@ -202,7 +203,7 @@ export default function WeeklyPlan() {
             >
               {plans.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name} ({p.target_calories || 2000} kcal)
+                  {p.name}
                 </option>
               ))}
             </select>
@@ -260,19 +261,6 @@ export default function WeeklyPlan() {
                   placeholder="ej. Plan bajo en carbohidratos"
                   value={newPlanDesc}
                   onChange={(e) => setNewPlanDesc(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Objetivo Calórico Diario</label>
-                <input
-                  type="number"
-                  min="500"
-                  max="10000"
-                  required
-                  value={newPlanCalories}
-                  onChange={(e) => setNewPlanCalories(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
@@ -346,7 +334,7 @@ export default function WeeklyPlan() {
                   const name = m.meal_name || m.name;
                   return (
                     <option key={id} value={id}>
-                      {name} ({m.category || 'Sin cat.'})
+                      {name}
                     </option>
                   );
                 })

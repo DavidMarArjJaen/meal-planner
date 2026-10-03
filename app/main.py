@@ -9,6 +9,7 @@ from app.schemas import (
     MealIngredientCreate,
     MealListResponse,
     MealResponse,
+    MealTag,
     PlanCreate,
     PlanResponse,
     ShoppingListResponse,
@@ -16,17 +17,17 @@ from app.schemas import (
 
 
 app = FastAPI(
-    title="Meal Planner AI API",
-    description="API para la gestión de comidas, planes semanales y recomendaciones con IA.",
+    title="Meal Planner API",
+    description="API para gestionar platos, etiquetas, ingredientes y planes semanales.",
     version="0.1.0"
 )
 
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite peticiones desde cualquier origen (ideal para desarrollo)
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Permite todos los métodos (GET, POST, PUT, DELETE, etc.)
+    allow_methods=["*"],
     allow_headers=["*"],  # Permite todos los encabezados
 )
 
@@ -34,56 +35,44 @@ app.add_middleware(
 def read_root():
     return {
         "status": "online",
-        "app": "Meal Planner AI",
+        "app": "Meal Planner",
         "message": "Servidor FastAPI funcionando correctamente"
     }
 
-@app.get("/meals", response_model=MealListResponse)  # <--- Indicamos el modelo de respuesta
+@app.get("/meals", response_model=MealListResponse)
 def get_meals(
-    category: Optional[str] = Query(None, description="Filtrar por categoría (ej. Almuerzo, Cena)"),
-    max_calories: Optional[int] = Query(None, description="Calorías máximas permitidas"),
-    tag: Optional[str] = Query(None, description="Filtrar por etiqueta (ej. Sin Gluten, Alto en Proteína)"),
+    tag: Optional[MealTag] = Query(None, description="Filtrar por una etiqueta"),
     limit: int = Query(10, ge=1, le=100, description="Número máximo de resultados (1-100)")
 ):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            query = "SELECT * FROM v_meals_full_info WHERE 1=1"
+            query = "SELECT * FROM v_meals_app WHERE 1=1"
             params = []
 
-            if category:
-                query += " AND category ILIKE %s"
-                params.append(f"%{category}%")
-
-            if max_calories is not None:
-                query += " AND calories <= %s"
-                params.append(max_calories)
-
             if tag:
-                query += " AND tags::text ILIKE %s"
-                params.append(f"%{tag}%")
+                query += """
+                    AND EXISTS (
+                        SELECT 1
+                        FROM meal_tags mt
+                        JOIN tags t ON t.id = mt.tag_id
+                        WHERE mt.meal_id = v_meals_app.meal_id
+                          AND t.name = %s
+                    )
+                """
+                params.append(tag)
 
             query += " ORDER BY meal_id DESC LIMIT %s;"
             params.append(limit)
-
             cursor.execute(query, tuple(params))
             meals = cursor.fetchall()
-
             return {
                 "total_returned": len(meals),
-                "filters_applied": {
-                    "category": category,
-                    "max_calories": max_calories,
-                    "tag": tag,
-                    "limit": limit
-                },
-                "meals": meals
+                "filters_applied": {"tag": tag, "limit": limit},
+                "meals": meals,
             }
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error al consultar la base de datos: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error al consultar la base de datos: {str(e)}")
     finally:
         conn.close()
 
@@ -92,7 +81,7 @@ def get_meal_by_id(meal_id: int):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM v_meals_full_info WHERE meal_id = %s;", (meal_id,))
+            cursor.execute("SELECT * FROM v_meals_app WHERE meal_id = %s;", (meal_id,))
             meal = cursor.fetchone()
 
             if not meal:
@@ -112,7 +101,6 @@ def get_meal_by_id(meal_id: int):
     finally:
         conn.close()
 
-
 @app.post("/plans", response_model=PlanResponse, status_code=status.HTTP_201_CREATED)
 def create_meal_plan(plan: PlanCreate):
     conn = get_db_connection()
@@ -120,14 +108,13 @@ def create_meal_plan(plan: PlanCreate):
         with conn.cursor() as cursor:
             # 1. Insertar la cabecera del plan
             insert_plan_query = """
-                INSERT INTO meal_plans (name, description, target_calories, start_date)
-                VALUES (%s, %s, %s, COALESCE(%s, CURRENT_DATE))
-                RETURNING id, name, description, target_calories, start_date;
+                INSERT INTO meal_plans (name, description, start_date)
+                VALUES (%s, %s, COALESCE(%s, CURRENT_DATE))
+                RETURNING id, name, description, start_date;
             """
             cursor.execute(insert_plan_query, (
                 plan.name,
                 plan.description,
-                plan.target_calories,
                 plan.start_date
             ))
             created_plan = cursor.fetchone()
@@ -158,7 +145,6 @@ def create_meal_plan(plan: PlanCreate):
                 "id": created_plan["id"],
                 "name": created_plan["name"],
                 "description": created_plan["description"],
-                "target_calories": created_plan["target_calories"],
                 "start_date": created_plan["start_date"],
                 "items": created_items
             }
@@ -203,7 +189,6 @@ def get_meal_plans():
                     p.id AS plan_id,
                     p.name AS plan_name,
                     p.description AS plan_description,
-                    p.target_calories,
                     p.start_date,
                     pi.id AS item_id,
                     pi.meal_id,
@@ -228,7 +213,6 @@ def get_meal_plans():
                         "id": pid,
                         "name": row["plan_name"],
                         "description": row["plan_description"],
-                        "target_calories": row["target_calories"],
                         "start_date": row["start_date"],
                         "items": []
                     }
@@ -296,8 +280,8 @@ def add_to_weekly_plan(item: dict):
         else:
             # Si no hay ningún plan en la base de datos, creamos uno por defecto
             cursor.execute("""
-                INSERT INTO meal_plans (name, description, target_calories, start_date)
-                VALUES ('Plan Semanal Principal', 'Plan creado automáticamente', 2000, CURRENT_DATE)
+                INSERT INTO meal_plans (name, description, start_date)
+                VALUES ('Plan Semanal Principal', 'Plan creado automáticamente', CURRENT_DATE)
                 RETURNING id;
             """)
             target_plan_id = cursor.fetchone()["id"]
@@ -346,7 +330,6 @@ def get_meal_plan_by_id(plan_id: int):
                     p.id AS plan_id,
                     p.name AS plan_name,
                     p.description AS plan_description,
-                    p.target_calories,
                     p.start_date,
                     pi.id AS item_id,
                     pi.meal_id,
@@ -375,7 +358,6 @@ def get_meal_plan_by_id(plan_id: int):
                 "id": first_row["plan_id"],
                 "name": first_row["plan_name"],
                 "description": first_row["plan_description"],
-                "target_calories": first_row["target_calories"],
                 "start_date": first_row["start_date"],
                 "items": []
             }
@@ -449,15 +431,13 @@ def update_meal_plan(plan_id: int, plan: PlanCreate):
                 UPDATE meal_plans 
                 SET name = %s,
                     description = %s,
-                    target_calories = %s,
                     start_date = COALESCE(%s, start_date)
                 WHERE id = %s
-                RETURNING id, name, description, target_calories, start_date;
+                RETURNING id, name, description, start_date;
             """
             cursor.execute(update_plan_query, (
                 plan.name,
                 plan.description,
-                plan.target_calories,
                 plan.start_date,
                 plan_id
             ))
@@ -496,7 +476,6 @@ def update_meal_plan(plan_id: int, plan: PlanCreate):
                 "id": updated_plan["id"],
                 "name": updated_plan["name"],
                 "description": updated_plan["description"],
-                "target_calories": updated_plan["target_calories"],
                 "start_date": updated_plan["start_date"],
                 "items": updated_items
             }
@@ -563,39 +542,53 @@ def replace_meal_ingredients(
             (meal_id, ingredient_id, ingredient.amount, ingredient.unit.strip()),
         )
 
+
+def replace_meal_tags(cursor, meal_id: int, tags: List[MealTag]):
+    cursor.execute("DELETE FROM meal_tags WHERE meal_id = %s;", (meal_id,))
+    for tag in set(tags):
+        cursor.execute(
+            """
+            INSERT INTO tags (name) VALUES (%s)
+            ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+            RETURNING id;
+            """,
+            (tag,),
+        )
+        tag_id = cursor.fetchone()["id"]
+        cursor.execute(
+            "INSERT INTO meal_tags (meal_id, tag_id) VALUES (%s, %s) ON CONFLICT DO NOTHING;",
+            (meal_id, tag_id),
+        )
+
+
 @app.post("/meals", response_model=MealResponse, status_code=status.HTTP_201_CREATED)
 def create_meal(meal: MealCreate):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
             query = """
-                INSERT INTO meals (name, description, category_id, prep_time_minutes, calories, protein_g, carbs_g, fat_g)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO meals (name, description, calories)
+                VALUES (%s, %s, 0)
                 RETURNING id;
             """
             cursor.execute(query, (
                 meal.name,
-                meal.description,
-                meal.category_id,
-                meal.prep_time_minutes,
-                meal.calories,
-                meal.protein_g,
-                meal.carbs_g,
-                meal.fat_g
+                meal.description
             ))
             new_meal_id = cursor.fetchone()["id"]
             replace_meal_ingredients(cursor, new_meal_id, meal.ingredients)
+            replace_meal_tags(cursor, new_meal_id, meal.tags)
             conn.commit()
 
             # Consultamos la vista para devolver el objeto completo serializado por MealResponse
-            cursor.execute("SELECT * FROM v_meals_full_info WHERE meal_id = %s;", (new_meal_id,))
+            cursor.execute("SELECT * FROM v_meals_app WHERE meal_id = %s;", (new_meal_id,))
             return cursor.fetchone()
 
     except psycopg2.IntegrityError as e:
         conn.rollback()
         raise HTTPException(
             status_code=400,
-            detail=f"Error de integridad. Verifica que el 'category_id' ({meal.category_id}) exista en la base de datos."
+            detail=f"Error de integridad al crear el plato: {str(e)}"
         )
     except Exception as e:
         conn.rollback()
@@ -612,25 +605,13 @@ def update_meal(meal_id: int, meal: MealCreate):
             query = """
                 UPDATE meals
                 SET name = %s,
-                    description = %s,
-                    category_id = %s,
-                    prep_time_minutes = %s,
-                    calories = %s,
-                    protein_g = %s,
-                    carbs_g = %s,
-                    fat_g = %s
+                    description = %s
                 WHERE id = %s
                 RETURNING id;
             """
             cursor.execute(query, (
                 meal.name,
                 meal.description,
-                meal.category_id,
-                meal.prep_time_minutes,
-                meal.calories,
-                meal.protein_g,
-                meal.carbs_g,
-                meal.fat_g,
                 meal_id
             ))
             updated = cursor.fetchone()
@@ -642,17 +623,17 @@ def update_meal(meal_id: int, meal: MealCreate):
                 )
 
             replace_meal_ingredients(cursor, meal_id, meal.ingredients)
+            replace_meal_tags(cursor, meal_id, meal.tags)
             conn.commit()
 
-            # Consultamos la vista para obtener el plato actualizado con su categoría y etiquetas
-            cursor.execute("SELECT * FROM v_meals_full_info WHERE meal_id = %s;", (meal_id,))
+            cursor.execute("SELECT * FROM v_meals_app WHERE meal_id = %s;", (meal_id,))
             return cursor.fetchone()
 
     except psycopg2.IntegrityError:
         conn.rollback()
         raise HTTPException(
             status_code=400,
-            detail=f"Error de integridad. El 'category_id' ({meal.category_id}) no existe."
+            detail="Error de integridad al actualizar el plato."
         )
     except HTTPException:
         raise
@@ -668,6 +649,8 @@ def delete_meal(meal_id: int):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM meal_plan_items WHERE meal_id = %s;", (meal_id,))
+            removed_assignments = cursor.rowcount
             cursor.execute("DELETE FROM meals WHERE id = %s RETURNING id;", (meal_id,))
             deleted = cursor.fetchone()
 
@@ -678,7 +661,10 @@ def delete_meal(meal_id: int):
                 )
 
             conn.commit()
-            return {"message": f"El plato con ID {meal_id} fue eliminado correctamente."}
+            return {
+                "message": f"El plato con ID {meal_id} fue eliminado correctamente.",
+                "removed_plan_assignments": removed_assignments,
+            }
 
     except psycopg2.IntegrityError:
         conn.rollback()

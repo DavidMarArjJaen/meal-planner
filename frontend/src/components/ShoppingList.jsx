@@ -23,7 +23,7 @@ export default function ShoppingList() {
   const [items, setItems] = useState([]);
   const [newItemName, setNewItemName] = useState('');
   const [newItemAmount, setNewItemAmount] = useState('1');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
   // 1. Cargar la lista de planes al entrar
@@ -39,9 +39,12 @@ export default function ShoppingList() {
           setSelectedPlanId(savedPlanId);
         } else if (plansList.length > 0) {
           setSelectedPlanId(plansList[0].id);
+        } else {
+          setLoading(false);
         }
       } catch (err) {
         console.error('Error al obtener planes:', err);
+        setLoading(false);
       }
     };
     fetchPlans();
@@ -68,7 +71,10 @@ export default function ShoppingList() {
         .then((loadedItems) => {
           if (isActive) setItems(loadedItems);
         })
-        .catch((err) => console.error('Error al cargar la lista de la compra:', err));
+        .catch((err) => console.error('Error al cargar la lista de la compra:', err))
+        .finally(() => {
+          if (isActive) setLoading(false);
+        });
 
       return () => {
         isActive = false;
@@ -173,7 +179,11 @@ export default function ShoppingList() {
             <>
               <select
                 value={selectedPlanId}
-                onChange={(e) => setSelectedPlanId(e.target.value)}
+                onChange={(e) => {
+                  setItems([]);
+                  setLoading(true);
+                  setSelectedPlanId(e.target.value);
+                }}
                 className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-500"
               >
                 {plans.map((p) => (
@@ -256,7 +266,9 @@ export default function ShoppingList() {
           <div className="py-12 text-center text-xs text-slate-500">Cargando ingredientes...</div>
         ) : items.length === 0 ? (
           <div className="py-12 text-center text-xs text-slate-400">
-            No hay elementos en esta lista de la compra.
+            {selectedPlanId
+              ? 'Este plan aún no tiene ingredientes. Añade platos con ingredientes para generar la lista.'
+              : 'Crea un plan semanal para generar una lista de la compra.'}
           </div>
         ) : (
           <div className="space-y-2">

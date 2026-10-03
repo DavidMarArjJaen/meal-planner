@@ -1,24 +1,18 @@
-# Meal Planner AI 🥗🤖
+# Planificador de comidas
 
-Aplicación para la planificación semanal de comidas personalizada con asistente de Inteligencia Artificial y almacenamiento en PostgreSQL.
+Aplicación para organizar comidas semanales y generar listas de la compra con PostgreSQL.
 
 ---
 
 ## 📐 Esquema de la Base de Datos
 
-![Diagrama de Relaciones de la Base de Datos](database_schema.png)
+### Modelo de datos
 
-### 🔗 Relaciones y Estructura del Modelo ER
-
-* **`categories` (1:N con `meals`):** Clasifica los platos en *Desayuno, Almuerzo, Cena o Snack*.
-* **`meals` (Tabla Principal):** Almacena información nutricional clave (calorías, proteínas, carbohidratos, grasas), tiempo de preparación y estado activo.
-* **`tags` (N:M con `meals` mediante `meal_tags`):** Filtros y restricciones dietéticas (*Sin Gluten, Keto, Vegano, Alto en Proteína*, etc.).
-* **`ingredients` (N:M con `meals` mediante `meal_ingredients`):** Catálogo de alimentos básicos que registra las cantidades (`amount`) y unidades (`unit`) exactas por plato para permitir la generación automática de la lista de la compra.
-* **`meal_plans` (1:N con `meal_plan_items`):** Cabecera del plan semanal de comidas (nombre, descripción, objetivo calórico, fecha de inicio).
-* **`meal_plan_items` (Detalle de asignación):** Vincula una comida (`meal_id`) a un día de la semana (`day_of_week`) y momento determinado (`meal_type`).
-
-### 👁️ Vistas Especiales
-* **`v_meals_full_info`:** Vista SQL unificada que concatena categorías, etiquetas e ingredientes formateados en una sola estructura optimizada para consultas de lenguaje natural y prompting con Inteligencia Artificial.
+* **`meals`:** nombre y descripción de cada plato.
+* **`tags` y `meal_tags`:** etiquetas compartidas para clasificar cada plato: `Alto en proteínas`, `Casero`, `Ligero`, `Rápido`, `Desayuno`, `Comida/Cena` y `Snack`.
+* **`ingredients` y `meal_ingredients`:** ingredientes con cantidad y unidad por plato.
+* **`meal_plans` y `meal_plan_items`:** planes semanales y asignaciones por día y momento (`Desayuno`, `Almuerzo`, `Cena` o `Snack`).
+* **`v_meals_full_info`:** lectura de platos, etiquetas e ingredientes para la API.
 
 ---
 
@@ -43,8 +37,9 @@ meal-planner/
 │   ├── main.py           # Endpoints de la API FastAPI y lógica transaccional
 │   └── schemas.py        # Modelos de validación y serialización Pydantic
 ├── database/
-│   ├── meals_data.json   # Semilla inicial de datos nutricionales e ingredientes
-│   ├── schema.sql        # Definición de tablas, vistas, índices y restricciones
+│   ├── meals_data.json   # Platos, descripciones, tags e ingredientes
+│   ├── schema.sql        # Esquema inicial simplificado
+│   ├── migrations/       # Migraciones para bases existentes
 │   └── seed.py           # Script idempotente de ingesta de datos
 ├── database_schema.png   # Diagrama entidad-relación de la base de datos
 ├── .env.example          # Plantilla de variables de entorno requeridas
@@ -92,9 +87,16 @@ DB_HOST=127.0.0.1
 DB_PORT=5432
 ```
 
-### 5. Aplicar Migraciones de la Base de Datos
+### 5. Preparar la Base de Datos
+
+Para una base nueva:
 ```bash
 psql -h 127.0.0.1 -U postgres -d meal_planner -f database/schema.sql
+```
+
+Para la base existente, esta migración no elimina ni transforma tablas: añade la vista simplificada que consume la app.
+```bash
+psql -h 127.0.0.1 -U postgres -d meal_planner -f database/migrations/001_create_meals_app_view.sql
 ```
 
 ### 6. Cargar Datos Semilla de Ejemplo
@@ -136,8 +138,7 @@ Accede a la documentación interactiva e intuitiva de Swagger UI en **`[http://1
 
 ---
 
-## 🔮 Próximos Pasos (Roadmap)
+## Próximos pasos
 
-* [ ] Integración de Asistente de IA (OpenAI / Gemini) para generación automática de planes semanales basados en lenguaje natural.
-* [x] Generación automática de listas de la compra agregando los ingredientes registrados en `meal_ingredients` para los planes activos.
-* [ ] Autenticación y autorización de usuarios mediante JWT (*JSON Web Tokens*).
+* [x] Generar listas de la compra a partir de los ingredientes de los platos asignados.
+* [ ] Añadir autenticación y autorización de usuarios.

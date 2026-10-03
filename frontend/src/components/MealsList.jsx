@@ -2,6 +2,23 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { Utensils, Plus, Trash2, Search, Edit3, X } from 'lucide-react';
 
+const TAGS = [
+  'Desayuno',
+  'Comida/Cena',
+  'Snack',
+  'Ligero',
+  'Alba'
+];
+const TAG_FILTERS = [
+  { label: 'Todas', value: 'Todas' },
+  { label: 'Desayuno', value: 'Desayuno' },
+  { label: 'Comida/Cena', value: 'Comida/Cena' },
+  { label: 'Picoteo', value: 'Snack' },
+  { label: 'Ligero', value: 'Ligero' },
+  { label: 'Alba', value: 'Alba' }
+];
+const TAG_LABELS = { Snack: 'Picoteo' };
+
 const requestMeals = async () => {
   const response = await api.get(`/meals?limit=100&_t=${Date.now()}`);
   const rawList = response.data?.meals || (Array.isArray(response.data) ? response.data : []);
@@ -25,15 +42,14 @@ export default function MealsList() {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Todas');
+  const [selectedTag, setSelectedTag] = useState('Todas');
 
   // Estado del formulario
   const [showModal, setShowModal] = useState(false);
   const [editingMeal, setEditingMeal] = useState(null);
 
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('Almuerzo');
-  const [calories, setCalories] = useState('');
+  const [tags, setTags] = useState([]);
   const [description, setDescription] = useState('');
 
   // Lista de ingredientes para el plato
@@ -41,23 +57,8 @@ export default function MealsList() {
   const [ingName, setIngName] = useState('');
   const [ingAmount, setIngAmount] = useState('');
   const [ingUnit, setIngUnit] = useState('g');
-
-  const categories = ['Todas', 'Desayuno', 'Almuerzo', 'Cena', 'Snack', 'Postre'];
-
-  const CATEGORY_TO_ID = {
-    'Desayuno': 1,
-    'Almuerzo': 2,
-    'Cena': 3,
-    'Snack': 4,
-    'Postre': 4
-  };
-
-  const ID_TO_CATEGORY = {
-    1: 'Desayuno',
-    2: 'Almuerzo',
-    3: 'Cena',
-    4: 'Snack'
-  };
+  const [savingMeal, setSavingMeal] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   // Cargar platos con sanitización de tipos
   const fetchMeals = async (showLoading = false) => {
@@ -96,19 +97,15 @@ export default function MealsList() {
     if (meal) {
       setEditingMeal(meal);
       setName(meal.name || meal.meal_name || '');
-      
-      const categoryName = meal.category || ID_TO_CATEGORY[meal.category_id] || 'Almuerzo';
-      setCategory(categoryName);
-      setCalories(meal.calories || '');
       setDescription(meal.description || '');
+      setTags(Array.isArray(meal.tags) ? meal.tags : []);
 
       setIngredients(Array.isArray(meal.ingredients) ? meal.ingredients : []);
     } else {
       setEditingMeal(null);
       setName('');
-      setCategory('Almuerzo');
-      setCalories('');
       setDescription('');
+      setTags([]);
       setIngredients([]);
     }
 
@@ -128,10 +125,17 @@ export default function MealsList() {
       unit: ingUnit
     };
 
-    setIngredients([...ingredients, newIng]);
+    setIngredients((current) => [...current, newIng]);
     setIngName('');
     setIngAmount('');
     setIngUnit('g');
+  };
+
+  const handleIngredientKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleAddIngredient();
+    }
   };
 
   // Quitar ingrediente
@@ -147,15 +151,12 @@ export default function MealsList() {
     const payload = {
       name: name.trim(),
       description: description.trim(),
-      category_id: CATEGORY_TO_ID[category] || 2,
-      prep_time_minutes: 20,
-      calories: Number(calories) || 0,
-      protein_g: 0.0,
-      carbs_g: 0.0,
-      fat_g: 0.0,
+      tags,
       ingredients: ingredients
     };
 
+    setSavingMeal(true);
+    setSaveError('');
     try {
       if (editingMeal) {
         const mealId = editingMeal.id || editingMeal.meal_id;
@@ -163,31 +164,32 @@ export default function MealsList() {
       } else {
         await api.post('/meals', payload);
       }
+      await fetchMeals();
       setShowModal(false);
-      fetchMeals();
     } catch (err) {
       console.error('Error al guardar:', err.response?.data || err);
-      alert('Error al guardar el plato. Revisa que el backend acepte estos datos.');
+      setSaveError(err.response?.data?.detail || 'No se pudo guardar el plato. Inténtalo de nuevo.');
+    } finally {
+      setSavingMeal(false);
     }
   };
 
   const handleDeleteMeal = async (mealId) => {
-    if (!window.confirm('¿Seguro que deseas eliminar este plato?')) return;
+    if (!window.confirm('Se eliminará el plato y se quitará de los planes semanales donde esté asignado. ¿Continuar?')) return;
     try {
       await api.delete(`/meals/${mealId}`);
       fetchMeals();
     } catch (err) {
       console.error('Error al eliminar:', err);
+      alert(err.response?.data?.detail || 'No se pudo eliminar el plato.');
     }
   };
 
   const filteredMeals = meals.filter((meal) => {
     const mealName = (meal.name || meal.meal_name || '').toLowerCase();
     const matchesSearch = mealName.includes(search.toLowerCase());
-    const matchesCategory =
-      selectedCategory === 'Todas' ||
-      (meal.category || '').toLowerCase() === selectedCategory.toLowerCase();
-    return matchesSearch && matchesCategory;
+    const matchesTag = selectedTag === 'Todas' || (meal.tags || []).includes(selectedTag);
+    return matchesSearch && matchesTag;
   });
 
   return (
@@ -225,17 +227,17 @@ export default function MealsList() {
         </div>
 
         <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0">
-          {categories.map((cat) => (
+          {TAG_FILTERS.map(({ label, value }) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              key={value}
+              onClick={() => setSelectedTag(value)}
               className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer ${
-                selectedCategory === cat
+                selectedTag === value
                   ? 'bg-emerald-500 text-white'
                   : 'bg-white border border-slate-200 text-slate-600'
               }`}
             >
-              {cat}
+              {label}
             </button>
           ))}
         </div>
@@ -260,16 +262,15 @@ export default function MealsList() {
                 className="bg-white p-5 rounded-2xl border border-slate-100 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg uppercase">
-                      {meal.category || 'Almuerzo'}
-                    </span>
-                    {meal.calories > 0 && (
-                      <span className="text-[10px] font-semibold text-slate-500">
-                        {meal.calories} kcal
-                      </span>
+                    {meal.tags?.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {meal.tags.map((tag) => (
+                          <span key={tag} className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md">
+                            {TAG_LABELS[tag] || tag}
+                          </span>
+                        ))}
+                      </div>
                     )}
-                  </div>
 
                   <h3 className="font-bold text-slate-800 text-sm mb-1">{mealName}</h3>
 
@@ -349,35 +350,24 @@ export default function MealsList() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">
-                    Categoría
-                  </label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
-                  >
-                    <option value="Desayuno">Desayuno</option>
-                    <option value="Almuerzo">Almuerzo</option>
-                    <option value="Cena">Cena</option>
-                    <option value="Snack">Snack</option>
-                    <option value="Postre">Postre</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">
-                    Calorías (kcal)
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="ej. 550"
-                    value={calories}
-                    onChange={(e) => setCalories(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
-                  />
-                </div>
+                <fieldset className="sm:col-span-2">
+                    <legend className="block text-xs font-semibold text-slate-600 mb-2">Etiquetas</legend>
+                    <div className="flex flex-wrap gap-x-4 gap-y-2">
+                      {TAGS.map((tag) => (
+                        <label key={tag} className="flex items-center gap-2 text-xs text-slate-700">
+                          <input
+                            type="checkbox"
+                            checked={tags.includes(tag)}
+                            onChange={() => setTags((current) => current.includes(tag)
+                              ? current.filter((item) => item !== tag)
+                              : [...current, tag])}
+                            className="accent-emerald-600"
+                          />
+                          {TAG_LABELS[tag] || tag}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
               </div>
 
               <div>
@@ -404,6 +394,7 @@ export default function MealsList() {
                     placeholder="Ingrediente (ej. Pollo)"
                     value={ingName}
                     onChange={(e) => setIngName(e.target.value)}
+                    onKeyDown={handleIngredientKeyDown}
                     className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs"
                   />
                   <input
@@ -411,6 +402,7 @@ export default function MealsList() {
                     placeholder="Cant."
                     value={ingAmount}
                     onChange={(e) => setIngAmount(e.target.value)}
+                    onKeyDown={handleIngredientKeyDown}
                     className="w-20 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs"
                   />
                   <select
@@ -459,6 +451,11 @@ export default function MealsList() {
                     Sin ingredientes añadidos.
                   </p>
                 )}
+                {ingredients.length > 0 && (
+                  <p className="text-[11px] text-slate-500">
+                    Los ingredientes se guardan al guardar el plato.
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -469,11 +466,15 @@ export default function MealsList() {
                 >
                   Cancelar
                 </button>
+                {saveError && (
+                  <p role="alert" className="mr-auto text-xs text-rose-600">{saveError}</p>
+                )}
                 <button
                   type="submit"
+                  disabled={savingMeal}
                   className="px-4 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
                 >
-                  {editingMeal ? 'Guardar Cambios' : 'Crear Plato'}
+                  {savingMeal ? 'Guardando…' : editingMeal ? 'Guardar Cambios' : 'Crear Plato'}
                 </button>
               </div>
             </form>
