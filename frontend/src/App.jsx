@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Utensils, ShoppingCart, Calendar } from 'lucide-react';
 import MealsList from './components/MealsList';
 import ShoppingList from './components/ShoppingList';
@@ -16,7 +16,7 @@ function App() {
             <div className="bg-emerald-500 text-white p-2 rounded-lg">
               <Utensils className="w-6 h-6" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900">Meal Planner AI</h1>
+            <h1 className="text-xl font-bold text-slate-900">Planificador de comidas Daviloncho</h1>
           </div>
 
           <nav className="flex space-x-2">

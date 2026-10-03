@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { Calendar, Plus, Trash2, FolderPlus, AlertCircle } from 'lucide-react';
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const MEAL_TYPES = ['Desayuno', 'Almuerzo', 'Cena', 'Snack'];
+
+const requestWeeklyPlanData = async () => {
+  const [mealsRes, plansRes] = await Promise.all([
+    api.get(`/meals?limit=100&_t=${Date.now()}`),
+    api.get(`/plans?_t=${Date.now()}`).catch(() => ({ data: [] }))
+  ]);
+  return {
+    meals: mealsRes.data?.meals || (Array.isArray(mealsRes.data) ? mealsRes.data : []),
+    plans: Array.isArray(plansRes.data) ? plansRes.data : []
+  };
+};
 
 export default function WeeklyPlan() {
   const [plans, setPlans] = useState([]);
@@ -31,28 +42,19 @@ export default function WeeklyPlan() {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const [mealsRes, plansRes] = await Promise.all([
-        api.get(`/meals?limit=100&_t=${Date.now()}`),
-        api.get(`/plans?_t=${Date.now()}`).catch(() => ({ data: [] }))
-      ]);
-
-      const mealsList = mealsRes.data?.meals || (Array.isArray(mealsRes.data) ? mealsRes.data : []);
+      const { meals: mealsList, plans: plansList } = await requestWeeklyPlanData();
       setAvailableMeals(mealsList);
 
       if (mealsList.length > 0) {
         setSelectedMealId(mealsList[0].meal_id || mealsList[0].id);
       }
 
-      const plansList = Array.isArray(plansRes.data) ? plansRes.data : [];
       setPlans(plansList);
+      setErrorMsg(null);
 
-      if (plansList.length > 0 && !selectedPlanId) {
-        setSelectedPlanId(plansList[0].id);
-        setCurrentPlanItems(plansList[0].items || []);
-      } else if (selectedPlanId) {
-        const activePlan = plansList.find((p) => p.id === Number(selectedPlanId));
-        setCurrentPlanItems(activePlan ? activePlan.items || [] : []);
-      }
+      const activePlan = plansList.find((plan) => plan.id === Number(selectedPlanId)) || plansList[0];
+      setSelectedPlanId(activePlan ? activePlan.id : '');
+      setCurrentPlanItems(activePlan ? activePlan.items || [] : []);
 
     } catch (err) {
       console.error('Error al cargar datos del plan:', err);
@@ -63,7 +65,30 @@ export default function WeeklyPlan() {
   };
 
   useEffect(() => {
-    fetchData();
+    let isActive = true;
+    requestWeeklyPlanData()
+      .then(({ meals, plans: plansList }) => {
+        if (!isActive) return;
+        setAvailableMeals(meals);
+        if (meals.length > 0) setSelectedMealId(meals[0].meal_id || meals[0].id);
+        setPlans(plansList);
+        if (plansList.length > 0) {
+          setSelectedPlanId(plansList[0].id);
+          setCurrentPlanItems(plansList[0].items || []);
+        }
+        setErrorMsg(null);
+      })
+      .catch((err) => {
+        console.error('Error al cargar datos del plan:', err);
+        if (isActive) setErrorMsg('No se pudieron obtener los datos. Revisa la consola o la conexión.');
+      })
+      .finally(() => {
+        if (isActive) setLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const handlePlanChange = (planId) => {
@@ -90,6 +115,7 @@ export default function WeeklyPlan() {
       setNewPlanDesc('');
       await fetchData();
       setSelectedPlanId(res.data.id);
+      setCurrentPlanItems(res.data.items || []);
     } catch (err) {
       console.error('Error al crear plan:', err);
       alert('No se pudo crear el plan');
@@ -145,7 +171,7 @@ export default function WeeklyPlan() {
   const handleRemoveItem = async (itemId) => {
     try {
       await api.delete(`/weekly-plan/${itemId}`);
-      setCurrentPlanItems((prev) => prev.filter((item) => item.id !== itemId));
+      await fetchData();
     } catch (err) {
       console.error('Error al borrar el plato del plan:', err);
       alert('No se pudo quitar el plato del plan.');
@@ -242,6 +268,9 @@ export default function WeeklyPlan() {
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Objetivo Calórico Diario</label>
                 <input
                   type="number"
+                  min="500"
+                  max="10000"
+                  required
                   value={newPlanCalories}
                   onChange={(e) => setNewPlanCalories(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500"

@@ -1,6 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { ShoppingBag, Plus, Trash2, CheckCircle2, Circle, RefreshCw, Copy, Check } from 'lucide-react';
+
+const loadShoppingItems = async (planId) => {
+  const response = await api.get(`/plans/${planId}/shopping-list`);
+  const backendItems = (response.data?.items || []).map((item, index) => ({
+    id: `auto-${index}-${item.ingredient}`,
+    name: item.ingredient,
+    amount: `${item.total_amount} ${item.unit}`,
+    completed: false,
+    isCustom: false
+  }));
+  const localCustomItems = JSON.parse(
+    localStorage.getItem(`custom_shopping_items_${planId}`) || '[]'
+  );
+  return [...backendItems, ...localCustomItems];
+};
 
 export default function ShoppingList() {
   const [plans, setPlans] = useState([]);
@@ -33,35 +48,31 @@ export default function ShoppingList() {
   }, []);
 
   // 2. Cargar ingredientes del plan + ítems manuales
-  const fetchShoppingList = async (planId) => {
+  const fetchShoppingList = async (planId, showLoading = false) => {
     if (!planId) return;
-    setLoading(true);
+    if (showLoading) setLoading(true);
     try {
-      const res = await api.get(`/plans/${planId}/shopping-list`);
-      const backendItems = (res.data?.items || []).map((item, idx) => ({
-        id: `auto-${idx}-${item.ingredient}`,
-        name: item.ingredient,
-        amount: `${item.total_amount} ${item.unit}`,
-        completed: false,
-        isCustom: false
-      }));
-
-      const localCustomItems = JSON.parse(
-        localStorage.getItem(`custom_shopping_items_${planId}`) || '[]'
-      );
-
-      setItems([...backendItems, ...localCustomItems]);
+      setItems(await loadShoppingItems(planId));
     } catch (err) {
       console.error('Error al cargar la lista de la compra:', err);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
   useEffect(() => {
     if (selectedPlanId) {
       localStorage.setItem('activeShoppingPlanId', selectedPlanId);
-      fetchShoppingList(selectedPlanId);
+      let isActive = true;
+      loadShoppingItems(selectedPlanId)
+        .then((loadedItems) => {
+          if (isActive) setItems(loadedItems);
+        })
+        .catch((err) => console.error('Error al cargar la lista de la compra:', err));
+
+      return () => {
+        isActive = false;
+      };
     }
   }, [selectedPlanId]);
 
@@ -173,7 +184,7 @@ export default function ShoppingList() {
               </select>
 
               <button
-                onClick={() => fetchShoppingList(selectedPlanId)}
+                onClick={() => fetchShoppingList(selectedPlanId, true)}
                 className="p-2 text-slate-500 hover:text-emerald-600 bg-slate-50 rounded-xl hover:bg-emerald-50 transition-colors cursor-pointer"
                 title="Recargar lista"
               >

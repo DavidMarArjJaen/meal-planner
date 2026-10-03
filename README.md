@@ -116,7 +116,7 @@ Accede a la documentación interactiva e intuitiva de Swagger UI en **`[http://1
 
 | Método | Endpoint | Descripción | Código HTTP |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/meals` | Obtiene el catálogo de comidas con paginación (`limit`, `offset`) | `200 OK` |
+| `GET` | `/meals` | Obtiene el catálogo de comidas, con límite configurable (`limit`) | `200 OK` |
 | `GET` | `/meals/{meal_id}` | Obtiene los detalles de un plato por su ID desde `v_meals_full_info` | `200 OK` / `404` |
 | `POST` | `/meals` | Registra un nuevo plato en el catálogo | `201 Created` / `400` |
 | `PUT` | `/meals/{meal_id}` | Actualiza completamente un plato existente | `200 OK` / `404` |
@@ -126,16 +126,18 @@ Accede a la documentación interactiva e intuitiva de Swagger UI en **`[http://1
 
 | Método | Endpoint | Descripción | Código HTTP |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/plans` | Crea un plan semanal completo con sus platos asignados (Transaccional) | `201 Created` / `400` |
+| `POST` | `/plans` | Crea un plan semanal vacío o con platos asignados (Transaccional) | `201 Created` / `400` |
 | `GET` | `/plans` | Lista todos los planes registrados con desglose de días y platos | `200 OK` |
 | `GET` | `/plans/{plan_id}` | Obtiene un plan semanal específico por su ID | `200 OK` / `404` |
 | `PUT` | `/plans/{plan_id}` | Actualiza un plan y reemplaza de forma atómica sus asignaciones | `200 OK` / `400` / `404` |
 | `DELETE` | `/plans/{plan_id}` | Elimina un plan y borra en cascada sus items | `200 OK` / `404` |
+| `POST` | `/weekly-plan` | Asigna un plato a un hueco y reemplaza el anterior si ya está ocupado | `200 OK` / `400` |
+| `DELETE` | `/weekly-plan/{item_id}` | Elimina una asignación individual del plan | `200 OK` / `404` |
 
 ---
 
 ## 🔮 Próximos Pasos (Roadmap)
 
 * [ ] Integración de Asistente de IA (OpenAI / Gemini) para generación automática de planes semanales basados en lenguaje natural.
-* [ ] Generación automática de listas de la compra agregando los ingredientes registrados en `meal_ingredients` para los planes activos.
+* [x] Generación automática de listas de la compra agregando los ingredientes registrados en `meal_ingredients` para los planes activos.
 * [ ] Autenticación y autorización de usuarios mediante JWT (*JSON Web Tokens*).

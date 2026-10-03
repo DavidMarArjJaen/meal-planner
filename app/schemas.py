@@ -12,6 +12,12 @@ class BaseSchema(BaseModel):
 # ------------------------------------------------------------------
 # ESQUEMAS PARA PLATOS / COMIDAS (MEALS)
 # ------------------------------------------------------------------
+class MealIngredientCreate(BaseModel):
+    name: str
+    amount: float
+    unit: str
+
+
 class MealResponse(BaseSchema):
     """
     Esquema tolerante para los datos de un plato de la vista v_meals_full_info.
@@ -28,6 +34,7 @@ class MealResponse(BaseSchema):
     fat_g: Optional[float] = None
     tags: Optional[str] = None
     ingredients_list: Optional[str] = None
+    ingredients: List[MealIngredientCreate] = Field(default_factory=list)
 
 
 
@@ -51,12 +58,6 @@ class MealListResponse(BaseModel):
     filters_applied: FiltersApplied
     meals: List[MealResponse]
 
-# Sub-esquema para un ingrediente individual
-class MealIngredientCreate(BaseModel):
-    name: str
-    amount: float
-    unit: str
-
 class MealCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=120)
     description: Optional[str] = None
@@ -67,7 +68,7 @@ class MealCreate(BaseModel):
     protein_g: Optional[float] = 0.0
     carbs_g: Optional[float] = 0.0
     fat_g: Optional[float] = 0.0
-    ingredients: Optional[List[MealIngredientCreate]] = []
+    ingredients: Optional[List[MealIngredientCreate]] = Field(default_factory=list)
 
 
 # ------------------------------------------------------------------
@@ -85,7 +86,7 @@ class PlanCreate(BaseModel):
     description: Optional[str] = None
     target_calories: Optional[int] = Field(None, ge=500, le=10000)
     start_date: Optional[date] = None
-    items: List[PlanItemCreate] = Field(..., min_length=1)  # Usa min_length para Pydantic v2
+    items: List[PlanItemCreate] = Field(default_factory=list)
 
 
 class PlanItemResponse(PlanItemCreate, BaseSchema):
@@ -100,7 +101,7 @@ class PlanResponse(BaseSchema):
     description: Optional[str] = None
     target_calories: Optional[int] = None
     start_date: Optional[date] = None
-    items: List[PlanItemResponse] = []
+    items: List[PlanItemResponse] = Field(default_factory=list)
 
 
 # ------------------------------------------------------------------

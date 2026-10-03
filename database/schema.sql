@@ -91,3 +91,64 @@ CREATE TABLE IF NOT EXISTS meal_plan_items (
 
 -- Índices para optimizar las consultas frecuentes por plan
 CREATE INDEX IF NOT EXISTS idx_meal_plan_items_plan_id ON meal_plan_items(plan_id);
+
+-- 3. Catálogos y relaciones para etiquetas, ingredientes y lista de la compra
+CREATE TABLE IF NOT EXISTS tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(80) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS ingredients (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(120) NOT NULL UNIQUE,
+    category VARCHAR(80) NOT NULL DEFAULT 'Despensa'
+);
+
+CREATE TABLE IF NOT EXISTS meal_tags (
+    meal_id INT NOT NULL REFERENCES meals(id) ON DELETE CASCADE,
+    tag_id INT NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+    PRIMARY KEY (meal_id, tag_id)
+);
+
+CREATE TABLE IF NOT EXISTS meal_ingredients (
+    meal_id INT NOT NULL REFERENCES meals(id) ON DELETE CASCADE,
+    ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE RESTRICT,
+    amount NUMERIC(10, 2) NOT NULL CHECK (amount >= 0),
+    unit VARCHAR(30) NOT NULL,
+    PRIMARY KEY (meal_id, ingredient_id)
+);
+
+CREATE OR REPLACE VIEW v_meals_full_info AS
+SELECT
+    m.id AS meal_id,
+    m.name AS meal_name,
+    m.description,
+    c.name AS category,
+    m.prep_time_minutes,
+    m.calories,
+    m.protein_g,
+    m.carbs_g,
+    m.fat_g,
+    COALESCE(tag_data.tags, '') AS tags,
+    COALESCE(ingredient_data.ingredients_list, '') AS ingredients_list,
+    COALESCE(ingredient_data.ingredients, '[]'::json) AS ingredients
+FROM meals m
+LEFT JOIN categories c ON c.id = m.category_id
+LEFT JOIN LATERAL (
+    SELECT STRING_AGG(t.name, ', ' ORDER BY t.name) AS tags
+    FROM meal_tags mt
+    JOIN tags t ON t.id = mt.tag_id
+    WHERE mt.meal_id = m.id
+) tag_data ON TRUE
+LEFT JOIN LATERAL (
+    SELECT
+        STRING_AGG(i.name, ', ' ORDER BY i.name) AS ingredients_list,
+        JSON_AGG(
+            JSON_BUILD_OBJECT('name', i.name, 'amount', mi.amount, 'unit', mi.unit)
+            ORDER BY i.name
+        ) AS ingredients
+    FROM meal_ingredients mi
+    JOIN ingredients i ON i.id = mi.ingredient_id
+    WHERE mi.meal_id = m.id
+) ingredient_data ON TRUE
+WHERE m.is_active = TRUE;

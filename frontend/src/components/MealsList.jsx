@@ -1,6 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { Utensils, Plus, Trash2, Search, Edit3, X } from 'lucide-react';
+
+const requestMeals = async () => {
+  const response = await api.get(`/meals?limit=100&_t=${Date.now()}`);
+  const rawList = response.data?.meals || (Array.isArray(response.data) ? response.data : []);
+
+  return rawList.map((meal) => {
+    let ingredients = [];
+    if (Array.isArray(meal.ingredients)) {
+      ingredients = meal.ingredients;
+    } else if (typeof meal.ingredients_list === 'string' && meal.ingredients_list.trim()) {
+      ingredients = meal.ingredients_list.split(',').map((name) => ({
+        name: name.trim(),
+        amount: '',
+        unit: ''
+      }));
+    }
+    return { ...meal, ingredients };
+  });
+};
 
 export default function MealsList() {
   const [meals, setMeals] = useState([]);
@@ -41,32 +60,10 @@ export default function MealsList() {
   };
 
   // Cargar platos con sanitización de tipos
-  const fetchMeals = async () => {
-    setLoading(true);
+  const fetchMeals = async (showLoading = false) => {
+    if (showLoading) setLoading(true);
     try {
-      const res = await api.get(`/meals?limit=100&_t=${Date.now()}`);
-      const rawList = res.data?.meals || (Array.isArray(res.data) ? res.data : []);
-
-      const normalizedList = rawList.map((meal) => {
-        let ingredientsArray = [];
-
-        if (Array.isArray(meal.ingredients)) {
-          ingredientsArray = meal.ingredients;
-        } else if (typeof meal.ingredients_list === 'string' && meal.ingredients_list.trim()) {
-          ingredientsArray = meal.ingredients_list.split(',').map((str) => ({
-            name: str.trim(),
-            amount: '',
-            unit: ''
-          }));
-        }
-
-        return {
-          ...meal,
-          ingredients: ingredientsArray
-        };
-      });
-
-      setMeals(normalizedList);
+      setMeals(await requestMeals());
     } catch (err) {
       console.error('Error al cargar platos:', err);
       setMeals([]);
@@ -76,7 +73,22 @@ export default function MealsList() {
   };
 
   useEffect(() => {
-    fetchMeals();
+    let isActive = true;
+    requestMeals()
+      .then((loadedMeals) => {
+        if (isActive) setMeals(loadedMeals);
+      })
+      .catch((err) => {
+        console.error('Error al cargar platos:', err);
+        if (isActive) setMeals([]);
+      })
+      .finally(() => {
+        if (isActive) setLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   // Abrir Modal
