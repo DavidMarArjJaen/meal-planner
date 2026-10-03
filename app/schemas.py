@@ -24,6 +24,7 @@ MealTag = Literal[
     "Snack",
     "Ligero",
     "Alba",
+    "Guarniciones",
 ]
 
 
@@ -68,7 +69,7 @@ class MealCreate(BaseModel):
 class PlanItemCreate(BaseModel):
     meal_id: int
     day_of_week: str = Field(..., description="Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo")
-    meal_type: str = Field(..., description="Desayuno, Almuerzo, Cena, Snack")
+    meal_type: str = Field(..., description="Desayuno, Almuerzo, Guarniciones, Snack, Cena")
     servings: Optional[int] = Field(1, ge=1)
 
 

@@ -1,3 +1,18 @@
+BEGIN;
+
+INSERT INTO meal_tags (meal_id, tag_id)
+SELECT m.id, t.id
+FROM meals m
+JOIN categories c ON c.id = m.category_id
+JOIN tags t ON t.name = CASE lower(c.name)
+    WHEN 'desayuno' THEN 'Desayuno'
+    WHEN 'almuerzo' THEN 'Comida/Cena'
+    WHEN 'cena' THEN 'Comida/Cena'
+    WHEN 'snack' THEN 'Snack'
+END
+WHERE lower(c.name) IN ('desayuno', 'almuerzo', 'cena', 'snack')
+ON CONFLICT DO NOTHING;
+
 CREATE OR REPLACE VIEW v_meals_app AS
 SELECT
     m.id AS meal_id,
@@ -14,7 +29,7 @@ LEFT JOIN LATERAL (
         ARRAY[]::text[]
     ) AS tags
     FROM (
-        SELECT CASE lower(source.tag)
+        SELECT CASE lower(t.name)
             WHEN 'ligero' THEN 'Ligero'
             WHEN 'desayuno' THEN 'Desayuno'
             WHEN 'almuerzo' THEN 'Comida/Cena'
@@ -41,3 +56,5 @@ LEFT JOIN LATERAL (
     WHERE mi.meal_id = m.id
 ) AS ingredient_data ON TRUE
 WHERE m.is_active IS TRUE;
+
+COMMIT;

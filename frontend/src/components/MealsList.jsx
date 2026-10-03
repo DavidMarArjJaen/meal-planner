@@ -7,7 +7,8 @@ const TAGS = [
   'Comida/Cena',
   'Snack',
   'Ligero',
-  'Alba'
+  'Alba',
+  'Guarniciones'
 ];
 const TAG_FILTERS = [
   { label: 'Todas', value: 'Todas' },
@@ -15,7 +16,8 @@ const TAG_FILTERS = [
   { label: 'Comida/Cena', value: 'Comida/Cena' },
   { label: 'Picoteo', value: 'Snack' },
   { label: 'Ligero', value: 'Ligero' },
-  { label: 'Alba', value: 'Alba' }
+  { label: 'Alba', value: 'Alba' },
+  { label: 'Guarniciones', value: 'Guarniciones' }
 ];
 const TAG_LABELS = { Snack: 'Picoteo' };
 
@@ -148,11 +150,34 @@ export default function MealsList() {
     e.preventDefault();
     if (!name.trim()) return;
 
+    const ingredientsToSave = [...ingredients];
+    const pendingIngredientName = ingName.trim();
+    if (pendingIngredientName) {
+      const pendingIngredient = {
+        name: pendingIngredientName,
+        amount: parseFloat(ingAmount) || 1,
+        unit: ingUnit
+      };
+      const existingIndex = ingredientsToSave.findIndex((ingredient) =>
+        ingredient.name.toLocaleLowerCase() === pendingIngredientName.toLocaleLowerCase()
+        && ingredient.unit === ingUnit
+      );
+
+      if (existingIndex >= 0) {
+        ingredientsToSave[existingIndex] = {
+          ...ingredientsToSave[existingIndex],
+          amount: Number(ingredientsToSave[existingIndex].amount) + pendingIngredient.amount
+        };
+      } else {
+        ingredientsToSave.push(pendingIngredient);
+      }
+    }
+
     const payload = {
       name: name.trim(),
       description: description.trim(),
       tags,
-      ingredients: ingredients
+      ingredients: ingredientsToSave
     };
 
     setSavingMeal(true);
@@ -422,7 +447,7 @@ export default function MealsList() {
                     onClick={handleAddIngredient}
                     className="px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-lg"
                   >
-                    +
+                    Añadir
                   </button>
                 </div>
 

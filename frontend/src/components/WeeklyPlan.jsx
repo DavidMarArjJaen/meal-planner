@@ -3,7 +3,7 @@ import api from '../api/axios';
 import { Calendar, Plus, Trash2, FolderPlus, AlertCircle } from 'lucide-react';
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-const MEAL_TYPES = ['Desayuno', 'Almuerzo', 'Cena', 'Snack'];
+const MEAL_TYPES = ['Desayuno', 'Almuerzo', 'Guarniciones', 'Snack', 'Cena'];
 
 const requestWeeklyPlanData = async () => {
   const [mealsRes, plansRes] = await Promise.all([
@@ -162,7 +162,14 @@ export default function WeeklyPlan() {
       await fetchData();
     } catch (err) {
       console.error('Error al agregar plato:', err);
-      setErrorMsg('Error al guardar el plato en el plan.');
+      const detail = err.response?.data?.detail;
+      setErrorMsg(
+        typeof detail === 'string'
+          ? detail
+          : detail
+            ? JSON.stringify(detail)
+            : err.message || 'Error al guardar el plato en el plan.'
+      );
     } finally {
       setIsAdding(false);
     }

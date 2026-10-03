@@ -11,12 +11,12 @@ CREATE TABLE IF NOT EXISTS tags (
     id SERIAL PRIMARY KEY,
     name VARCHAR(40) NOT NULL UNIQUE,
     CONSTRAINT tags_name_allowed CHECK (name IN (
-        'Desayuno', 'Comida/Cena', 'Snack', 'Ligero', 'Alba'
+        'Desayuno', 'Comida/Cena', 'Snack', 'Ligero', 'Alba', 'Guarniciones'
     ))
 );
 
 INSERT INTO tags (name) VALUES
-    ('Desayuno'), ('Comida/Cena'), ('Snack'), ('Ligero'), ('Alba')
+    ('Desayuno'), ('Comida/Cena'), ('Snack'), ('Ligero'), ('Alba'), ('Guarniciones')
 ON CONFLICT (name) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS ingredients (
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS meal_plan_items (
         day_of_week IN ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo')
     ),
     meal_type VARCHAR(50) NOT NULL CHECK (
-        meal_type IN ('Desayuno', 'Almuerzo', 'Cena', 'Snack')
+        meal_type IN ('Desayuno', 'Almuerzo', 'Guarniciones', 'Snack', 'Cena')
     ),
     servings INT DEFAULT 1 CHECK (servings > 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

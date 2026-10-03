@@ -12,6 +12,7 @@ ALLOWED_TAGS = {
     "Snack",
     "Ligero",
     "Alba",
+    "Guarniciones",
 }
 
 def load_json_data(filepath):

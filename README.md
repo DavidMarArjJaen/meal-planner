@@ -9,10 +9,10 @@ Aplicación para organizar comidas semanales y generar listas de la compra con P
 ### Modelo de datos
 
 * **`meals`:** nombre y descripción de cada plato.
-* **`tags` y `meal_tags`:** etiquetas compartidas para clasificar cada plato: `Alto en proteínas`, `Casero`, `Ligero`, `Rápido`, `Desayuno`, `Comida/Cena` y `Snack`.
+* **`tags` y `meal_tags`:** etiquetas compartidas para clasificar cada plato: `Desayuno`, `Comida/Cena`, `Snack`, `Ligero`, `Alba` y `Guarniciones`.
 * **`ingredients` y `meal_ingredients`:** ingredientes con cantidad y unidad por plato.
-* **`meal_plans` y `meal_plan_items`:** planes semanales y asignaciones por día y momento (`Desayuno`, `Almuerzo`, `Cena` o `Snack`).
-* **`v_meals_full_info`:** lectura de platos, etiquetas e ingredientes para la API.
+* **`meal_plans` y `meal_plan_items`:** planes semanales y asignaciones por día y momento (`Desayuno`, `Almuerzo`, `Guarniciones`, `Snack` o `Cena`).
+* **`v_meals_app`:** lectura simplificada de platos, etiquetas e ingredientes para la API.
 
 ---
 
@@ -97,6 +97,7 @@ psql -h 127.0.0.1 -U postgres -d meal_planner -f database/schema.sql
 Para la base existente, esta migración no elimina ni transforma tablas: añade la vista simplificada que consume la app.
 ```bash
 psql -h 127.0.0.1 -U postgres -d meal_planner -f database/migrations/001_create_meals_app_view.sql
+psql -h 127.0.0.1 -U postgres -d meal_planner -f database/migrations/002_add_guarniciones_slot.sql
 ```
 
 ### 6. Cargar Datos Semilla de Ejemplo
